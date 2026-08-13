@@ -3,7 +3,7 @@ name: ai-drama-video-reference-director
 description: Use when turning a Blender-rendered MP4/MOV or another reference video into shot-level motion, camera, composition, pose, or geometry constraints for Scaena AI manga-drama production, including Seedance reference-video generation, input-bundle validation, continuity review, and owner handoff; keep rights, provider calls, canonical state, and production acceptance behind explicit gates.
 ---
 
-# AI 漫剧视频参考导演
+# AI 做剧视频参考导演
 
 ## 使用场景
 
@@ -56,7 +56,8 @@ next_command
 - 当前可用的本地登记入口形如：
 
   ```bash
-  cd agent/scaena
+  export SCAENA_REPO=/path/to/scaena
+  cd "$SCAENA_REPO"
   go run ./cmd/scaena asset ingest <reference-video.mp4> \
     --project <project-path> \
     --role reference_video \
@@ -77,17 +78,18 @@ next_command
 
 ## 验证
 
-先运行技能与 profile 校验：
+先运行本仓库 Skill 与路由矩阵校验：
 
 ```bash
-scripts/skills.sh validate-custom
-scripts/skills.sh validate-profiles
+python3 scripts/validate_skills.py
+python3 ai-drama-router/scripts/validate_drama_matrix.py
 ```
 
 实现或排查 Scaena 视频参考能力时，至少运行相关 focused checks；不要把没有真实 provider 调用的测试描述成 live evidence：
 
 ```bash
-cd agent/scaena
+export SCAENA_REPO=/path/to/scaena
+cd "$SCAENA_REPO"
 go test ./internal/bridge/seedance ./internal/bridge/seedanceark ./internal/bridge/videomodels ./internal/video
 go test ./internal/cli -run 'Video|LiveVideo|Seedance' -count=1
 go test ./tests/integration -run 'VideoRun|VideoInputBundle|SingleShot' -count=1

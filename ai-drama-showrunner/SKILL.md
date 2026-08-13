@@ -28,9 +28,4 @@ description: Use when planning an AI drama season, multi-episode arc, episode fu
 
 ## 边界与验证
 
-不复制 canonical story、不直接 dispatch provider、不自动接受 episode。验证使用对应 owner 的 OpenSpec 和测试：
-
-```bash
-cd /workspaces/yeisme-agent/agent/scaena
-task test:architecture
-```
+不复制 canonical story、不直接 dispatch provider、不自动接受 episode。先运行本仓库的 `python3 scripts/validate_skills.py`；宿主集成必须再通过对应 story、episode 与 production Owner 的合同测试。

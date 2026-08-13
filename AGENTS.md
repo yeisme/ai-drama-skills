@@ -1,12 +1,12 @@
 # AI Drama Skills 工作区说明
 
-本目录是 Yeisme 第一方 AI 漫剧 Skills 模块，负责可复用的创作判断、评估流程、路由和 Owner handoff 说明，不负责保存剧本正文、ProductionGraph、资产 bytes、provider 凭据或运行时数据库。
+本仓库是 Yeisme 第一方 AI 做剧 Skills 项目，负责可复用的创作判断、评估流程、路由和 Owner handoff 说明，不负责保存剧本正文、ProductionGraph、资产 bytes、provider 凭据或运行时数据库。
 
 ## 目录边界
 
 - 每个 Skill 目录必须包含 `SKILL.md` 与 `agents/openai.yaml`。
 - `references/` 只放该 Skill 需要按需读取的规则、量表和示例。
-- `.skills/yeisme/` 是 Yeisme 发布源；`.agents/skills/` 和 `.claude/skills/` 是生成运行副本，不在本目录维护。
+- 本仓库是独立发布源；父级聚合仓库可把它挂载为 Git 子模块，但生成运行副本不在本仓库维护。
 - canonical screenplay 归 Auctra，调度/receipt 归 Ordo，视觉 artifact 归 Eikona，ProductionGraph/production acceptance 归 Scaena。
 
 ## 设计约束
@@ -24,12 +24,11 @@
 
 ## 验证
 
-从宿主仓库根目录运行：
+从本仓库根目录运行：
 
 ```bash
-scripts/skills.sh validate-custom
-scripts/skills.sh validate-profiles
-python3 ../../../scripts/validate_ai_drama_router_host.py
+python3 scripts/validate_skills.py
+python3 ai-drama-router/scripts/validate_drama_matrix.py
 ```
 
-只有经 profile promotion 决定后才运行 `scripts/skills.sh sync-root` 或 `scripts/skills.sh sync-subprojects`。
+宿主 profile、runtime 和 Owner 合同由宿主自己的 adapter 验证；不得把宿主私有命令回写到本仓库的 Router 包。

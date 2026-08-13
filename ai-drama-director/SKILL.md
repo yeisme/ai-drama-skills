@@ -30,6 +30,6 @@ description: Use when converting story emotion and character action into blockin
 不直接调用 provider、不冻结主体、不接受资产。视觉执行交给 Eikona，生产接受交给 Scaena：
 
 ```bash
-cd /workspaces/yeisme-agent
-scripts/skills.sh resolve ai-drama-director
+python3 scripts/validate_skills.py
+python3 ai-drama-router/scripts/validate_drama_matrix.py
 ```

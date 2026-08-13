@@ -33,10 +33,8 @@ description: Use when designing, simulating, stress-testing, or revising AI dram
 
 ## 边界与验证
 
-不保存私有记忆、不替代 canonical screenplay、不把角色模拟当作真实心理诊断。结构变更交给 Auctra/Dramaturge：
+不保存私有记忆、不替代 canonical screenplay、不把角色模拟当作真实心理诊断。先验证本仓库 Skill；涉及 Auctra/Dramaturge 集成时，再进入对应 Owner 仓库运行其公开的角色、连续性和回归测试：
 
 ```bash
-cd /workspaces/yeisme-agent/cli/auctra
-auctra --help
-go test ./...
+python3 scripts/validate_skills.py
 ```

@@ -59,7 +59,6 @@ description: Use when an AI drama, short-drama, manga-drama, television, film, p
 ## 验证
 
 ```bash
-scripts/skills.sh resolve ai-drama-format-strategist
-scripts/skills.sh resolve ai-drama-router
-scripts/skills.sh validate-custom
+python3 scripts/validate_skills.py
+python3 ai-drama-router/scripts/validate_drama_matrix.py
 ```

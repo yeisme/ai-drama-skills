@@ -28,7 +28,7 @@ description: Use when checking or repairing AI drama continuity across character
 ## 验证
 
 ```bash
-cd /workspaces/yeisme-agent/agent/scaena
-task test:architecture
-task test:integration
+python3 scripts/validate_skills.py
 ```
+
+涉及 Scaena continuity、artifact lineage 或 production gate 时，进入 Scaena Owner 仓库运行其公开的 focused architecture 与 integration checks。

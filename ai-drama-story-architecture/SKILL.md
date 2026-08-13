@@ -40,10 +40,8 @@ description: Use when designing or revising an AI drama premise, theme, conflict
 
 ## 边界与验证
 
-不写入 Auctra 正文、不伪造观众数据、不以“电影感”代替结构。Auctra 集成验证由 owner 运行：
+不写入 Auctra 正文、不伪造观众数据、不以“电影感”代替结构。先验证本仓库 Skill；Auctra 集成验证由 Owner 在其仓库运行：
 
 ```bash
-cd /workspaces/yeisme-agent/cli/auctra
-auctra --help
-go test ./...
+python3 scripts/validate_skills.py
 ```

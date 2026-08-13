@@ -48,8 +48,7 @@ Auctra owns accepted text, Story World refs, source revisions and review decisio
 ## Verification
 
 ```bash
-cd /workspaces/yeisme-agent/cli/auctra
-go test ./internal/storyhandoff ./internal/operation -count=1
-go test -tags=nomsgpack ./internal/cli -run 'TestStoryHandoff|TestOperationCatalog|TestBackendFacing' -count=1
-openspec validate auctra-ai-drama-story-handoff-v1 --strict --no-interactive
+python3 scripts/validate_skills.py
 ```
+
+端到端交接验证应由 Auctra 与 Ordo 的 Owner 仓库分别运行各自公开的 contract tests；不要在本 Skill 仓库绑定宿主机绝对路径或私有测试目录。

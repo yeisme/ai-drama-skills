@@ -29,7 +29,7 @@ description: Use when planning AI drama shot order, information release, attenti
 不直接导出最终平台包、不上传、不发布；assembly 和 delivery 由 Scaena 管理。
 
 ```bash
-cd /workspaces/yeisme-agent/agent/scaena
-task test:architecture
-task test:integration
+python3 scripts/validate_skills.py
 ```
+
+涉及 Scaena assembly、delivery 或 production acceptance 时，进入 Scaena Owner 仓库运行其公开的 focused integration checks。

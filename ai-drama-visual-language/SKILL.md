@@ -42,13 +42,10 @@ eikona generate \
 - 参考图模式失败时必须保留失败 run；只有用户明确接受语义降级，才能另起无参考图的 text-to-image run；
 - 所有候选评分都要绑定 CandidateSet、rubric 和 evidence。
 
-## 现有命令验证
+## 验证
 
 ```bash
-cd /workspaces/yeisme-agent/cli/eikona
-eikona workflow draw -f .eikona/workflows/pilot.yaml --seed 20260807 --json
-eikona review packet <run_id> --with-assessment --json
-go test ./internal/workflow ./internal/runtime ./internal/assessment
+python3 scripts/validate_skills.py
 ```
 
-这些命令验证 Eikona 底座，不代表真实多评委生产能力已经启用。
+涉及 Eikona generation、review packet 或资产交接时，进入 Eikona Owner 仓库运行其公开的 focused checks。Skill 校验通过不代表真实 provider 或多评委生产能力已经启用。

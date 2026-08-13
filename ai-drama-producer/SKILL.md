@@ -27,10 +27,4 @@ description: Use when defining AI drama production constraints, cost caps, right
 
 ## 边界与验证
 
-不持有 provider credential、不发布平台、不写 Scaena ProductionGraph。批次和生产策略由 Scaena/Ordo owner 实现：
-
-```bash
-cd /workspaces/yeisme-agent/agent/scaena
-task test:architecture
-task test:integration
-```
+不持有 provider credential、不发布平台、不写宿主 ProductionGraph。先运行本仓库的 `python3 scripts/validate_skills.py`；批次、预算、权限和生产策略还必须通过宿主 production/orchestration Owner 的架构与集成测试。

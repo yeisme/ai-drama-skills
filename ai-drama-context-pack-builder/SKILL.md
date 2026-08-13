@@ -63,7 +63,8 @@ description: Use when an AI drama story, episode, scene, director, visual, conti
 ## 验证
 
 ```bash
-scripts/skills.sh resolve ai-drama-context-pack-builder
-scripts/skills.sh resolve enterprise-multimodal-knowledge-router
-scripts/skills.sh validate-custom
+python3 scripts/validate_skills.py
+python3 ai-drama-router/scripts/validate_drama_matrix.py
 ```
+
+外部知识检索能力由宿主 Agent 解析 `enterprise-multimodal-knowledge-router` 或等价 Owner Skill；本仓库不假设特定安装脚本。

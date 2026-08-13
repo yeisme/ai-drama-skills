@@ -41,9 +41,4 @@ P0 可从以下校准起点开始：hard gates 全通过、总分至少 80/100�
 
 ## 验证
 
-```bash
-cd /workspaces/yeisme-agent/agent/ordo
-bun run test
-cd /workspaces/yeisme-agent/cli/eikona
-go test ./internal/assessment ./internal/runtime ./internal/workflow
-```
+先在本仓库运行 `python3 scripts/validate_skills.py`。接入宿主后，再运行 Ordo、视觉资产 Owner 与 production Owner 各自文档声明的候选集、评估和 handoff 合同测试；本 Skill 不假设这些 Owner 的本地路径或技术栈。
