@@ -39,6 +39,8 @@ status
 
 多阶段任务增加 `stage_plans[]`，每个元素包含 `stage_kind`、一个 `primary_skill`、最多一个 `compatible_skill`、输入/输出合同、Owner 和 gate。
 
+视频 route 可能生成原生音频时，相关 stage 还必须携带 refs-only `shot_audio_intent_ref/digest`、`provider_audio_policy`、`video_audio_capability_ref/digest`、`final_mix_owner_ref` 和独立 `audio_review_gate`；完整合同见 `shot-audio-intent-contract.md`。
+
 ## 状态
 
 `resolution_status`：
@@ -67,6 +69,7 @@ status
 3. source ref、version/digest 和 owner 必须可追溯；未知时不能伪造 `ready`。
 4. activation plan 与 production plan 分离；启用 Skill 不代表允许 provider call 或 canonical mutation。
 5. plan 中不包含 Skill body、raw prompt、完整剧本、provider payload、凭据、私有路径或完整思维链。
+6. 原生音频能力未知时不得从字段缺失推断为无音频；缺 `ShotAudioIntent`、replacement route 或独立 audio review gate 时 stage 不得标为 `ready`。
 
 ## Host projection
 

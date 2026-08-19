@@ -1,3 +1,3 @@
 display_name: AI 做剧制片与门禁
-short_description: Gate cost, rights, capability, quality, retries, and delivery.
-default_prompt: 请使用 $ai-drama-producer 为这个做剧项目冻结生产约束、预算、权限、质量下限、异常策略和 zero-call admission。
+short_description: Gate cost, rights, video/audio capability, quality, retries, and delivery.
+default_prompt: 请使用 $ai-drama-producer 为这个做剧项目冻结生产约束、预算、权限、视频原生音频能力、音频替换策略、质量下限、异常策略和 zero-call admission。

@@ -1,3 +1,3 @@
 display_name: AI 做剧导演决策
-short_description: Turn emotion and action into blocking, shots, sound, and rhythm.
-default_prompt: 请使用 $ai-drama-director 把这个场景转成观众目标、人物行动、空间调度、镜头理由、声音和节奏决策。
+short_description: Turn emotion and action into blocking, shots, timed audio intent, and rhythm.
+default_prompt: 请使用 $ai-drama-director 把这个场景转成观众目标、人物行动、空间调度、镜头理由、逐镜声音 cue、原生音频策略和节奏决策。

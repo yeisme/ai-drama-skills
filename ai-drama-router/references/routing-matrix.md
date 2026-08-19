@@ -12,12 +12,12 @@
 | `series_plan` | series bible、季度、pilot、分集、单元结构 | `ai-drama-showrunner` | `ai-drama-story-architecture` | `series-development` / `episode-planning` | `story_canon_owner` |
 | `episode_plan` | 本集功能、beat、开场与集尾钩子 | `ai-drama-story-architecture` | `ai-drama-showrunner` | `episode-planning` | `story_canon_owner` |
 | `scene_draft` | 场景动作、对白、潜台词和转场 | `screenplay-scene-writer` | `creative-style-lens-builder` | `scene-drafting` | `story_canon_owner` |
-| `director_plan` | 表演、调度、空间、镜头和声音意图 | `ai-drama-director` | `ai-drama-visual-language` | `director-planning` | story proposal / `production_owner` intent |
+| `director_plan` | 表演、调度、空间、镜头和逐镜 `ShotAudioIntent` | `ai-drama-director` | `ai-drama-visual-language` | `director-planning` | story proposal / `production_owner` intent；音频资产仍归 `audio_owner` |
 | `visual_plan` | 主体、风格、关键帧、分镜、候选 brief | `ai-drama-visual-language` | `ai-drama-continuity-supervisor` | `visual-production` | `visual_asset_owner` proposal |
 | `reference_video` | 参考视频动作、相机、构图、姿态约束 | `ai-drama-video-reference-director` | `ai-drama-continuity-supervisor` | `visual-production` | `production_owner` proposal |
 | `evaluation` | 候选盲评、分歧、裁决、修复队列 | `ai-drama-critic-panel` | `ai-drama-producer` | `review-repair` | `evaluation_owner` evidence / artifact owner review |
-| `generation` | 成本、权限、能力、批次和 retry admission | `ai-drama-producer` | `ai-drama-continuity-supervisor` | `visual-production` | `production_owner` |
-| `assembly` | 剪辑、声音、字幕、节奏和时间线 | `ai-drama-edit-and-sound` | `ai-drama-continuity-supervisor` | `assembly-delivery` | `production_owner` / `audio_owner` refs |
+| `generation` | 成本、权限、视频/原生音频能力、audio policy、批次和 retry admission | `ai-drama-producer` | `ai-drama-continuity-supervisor` | `visual-production` | `production_owner` |
+| `assembly` | 剪辑、原生音轨审听/替换、声音、字幕、节奏和时间线 | `ai-drama-edit-and-sound` | `ai-drama-continuity-supervisor` | `assembly-delivery` | `production_owner` / `audio_owner` refs |
 | `delivery_review` | 连续性、rights、cost、readiness 和交付 | `ai-drama-continuity-supervisor` | `ai-drama-producer` | `assembly-delivery` | `production_owner` |
 | `cross_owner_run` | 完整阶段、pause/resume、typed handoff | `ai-drama-production-orchestrator` | `ai-drama-producer` | 各 stage 独立选择 | production facade + domain owners |
 
@@ -43,6 +43,7 @@
 - StyleLens、Continuity、Producer 可以作为约束，但不得与 primary writer 竞争 artifact ownership。
 - 跨阶段不等于同时运行所有 Skill；先输出有序 stage plan，再逐阶段解析。
 - production/cost/rights blocker 不能被创作质量分或用户一句“继续”覆盖。
+- 支持或可能生成原生音频的 route 在 `director_plan` 缺少版本化 `ShotAudioIntent` 时不得进入 generation；视觉 pass 不得自动继承为音频 pass。
 
 ## 交互模式
 

@@ -41,12 +41,12 @@ next_command
 ## 工作流
 
 1. 读取当前项目、ProductionGraph、`ShotIntent`、主体/风格版本、权限和最近 blocker。参考视频只能绑定到明确镜头，不允许以“全片参考”绕过镜头意图。
-2. 识别参考语义：`camera`、`motion`、`composition`、`pose`、`geometry`。为每个角色说明“要保留什么”和“允许生成模型重解释什么”；详见 [reference-video-contract.md](references/reference-video-contract.md)。
+2. 识别参考语义：`camera`、`motion`、`composition`、`pose`、`geometry`。参考视频含音轨时还必须声明 `mute`、`reference_only`、`preserve_candidate` 或 `replace_after_generation`；不得因为视频有声音就把参考音轨当作 canonical audio。视觉角色详见 [reference-video-contract.md](references/reference-video-contract.md)，声音合同见 `../ai-drama-router/references/shot-audio-intent-contract.md`。
 3. 登记本地媒体。优先使用 Scaena CLI 生成 asset ref、digest、媒体探测事实、权限和 review 状态；不得手写 `.scaena`、数据库行或证据元数据。
-4. 编译冻结的输入 bundle proposal：保留 asset refs/digests、角色、顺序、裁剪段、时长、画幅、模型 capability、成本策略和来源 lineage；不要把临时 URL、signed URL、API key 或 provider payload 写入持久化状态。
+4. 编译冻结的输入 bundle proposal：保留 asset refs/digests、角色、顺序、裁剪段、时长、画幅、模型 capability、audio policy、成本策略和来源 lineage；参考视频裁切后重新核对音频时长/尾音，不要把临时 URL、signed URL、API key 或 provider payload 写入持久化状态。
 5. 先做 zero-call admission：检查格式、时长、大小、权限、主体/风格版本、capability、预算和幂等键。缺任何一项就返回 `needs_input`、`needs_contract` 或 `blocked`，不要先调用后补手续。
 6. 生成时优先走 Scaena/Aigora 的 owner bridge。只有用户明确授权的 live canary 才允许直接执行 Seedance provider smoke；“provider 成功”只代表任务完成，不代表 Scaena 接受。
-7. 将输出登记为 CAS-backed、`pending_review` 的候选，绑定输入 bundle digest 和生成 receipt。调用 `$ai-drama-continuity-supervisor` 检查动作相位、相机路径、构图、主体身份、服装/道具、空间和时间连续性。
+7. 将输出登记为 CAS-backed、`pending_review` 的候选，绑定输入 bundle digest 和生成 receipt。原生音轨单独登记为 `video_native_audio` 或标记 replacement required；调用 `$ai-drama-continuity-supervisor` 检查动作相位、相机路径、构图、主体身份、服装/道具、空间、时间和声音连续性。
 8. 将结果交给 `$scaena-production-operator` 或对应 Owner action；只有 Scaena 的显式 review/production acceptance 才能进入 assembly/export。需要节奏和声音时，再交给 `$ai-drama-edit-and-sound`。
 
 ## 当前实现判断

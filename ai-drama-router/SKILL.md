@@ -17,6 +17,7 @@ Router 不代写完整剧本、不成为新的创作数据库，也不为一次�
 - 需要按阶段和 artifact 选择工作 Skill 时读取 `references/routing-matrix.md`。
 - 需要判断 active、local on-demand、persistent activation、missing 或 external install 时读取 `references/skill-resolution-policy.md`。
 - 需要生成稳定输出或映射到宿主运行时计划时读取 `references/drama-route-plan-contract.md`。
+- 视频模型可能生成原生音频，或任务涉及对白、环境、Foley、音乐、静音和最终混音时，读取 `references/shot-audio-intent-contract.md`。
 - 需要校验美剧、竖屏短剧、漫剧、电影和已有剧本请求时读取 `references/route-examples.md`。
 
 ## 路由流程
@@ -25,11 +26,12 @@ Router 不代写完整剧本、不成为新的创作数据库，也不为一次�
 2. 剧型、单集时长、季/集形态或类型承诺不明确，且会改变结构判断时，选择 `ai-drama-format-strategist` 作为 primary；不要让 Writer 猜承载形态。
 3. 读取已有 CanonSnapshot、revision/digest、当前 artifact、最近 blocker 和权限/成本状态。跨项目知识只消费宿主声明的 Owner refs 或权限感知 ContextPack，不直接遍历私有状态。
 4. 根据阶段选择一个 `context_pack_profile`。除纯 intake 外，需要 owner/project 历史的工作先调用 `ai-drama-context-pack-builder` 准备最小上下文。
-5. 用户点名导演、作品、流派、情绪或视觉风格时，先使用 `creative-style-lens-builder` 生成原创 `StyleLens`；人名只保留在 source refs，不把 persona identity 传给 writer/provider。
-6. 选择一个 primary Skill。只有连续性、风格、生产约束或明确输入依赖需要时，增加一个 compatible constraint Skill。
-7. 按 `active → resolved_local_on_demand → needs_profile_promotion → needs_install_decision` 顺序解析 Skill。一次性任务默认停在 local on-demand，不执行持久化 activation。
-8. 若项目高频需要该 Skill，生成宿主无关的 `SkillActivationPlan`。宿主声明了启用适配器时可交给该适配器；未声明时只返回 proposal。没有当前用户的明确启用/安装授权时不得执行持久化变更。
-9. 生成 Owner handoff、gates 和下一动作。在 provider call、canonical 修改、主体冻结、持久化 activation、production acceptance、export 或 publish 前停在对应 gate。
+5. 若目标视频 route 支持、可能支持或曾观察到原生音频，`director_plan` 必须先产出版本化 `ShotAudioIntent`；缺失时返回 `needs_audio_intent`，不得把声音留给 provider 自由补全。
+6. 用户点名导演、作品、流派、情绪或视觉风格时，先使用 `creative-style-lens-builder` 生成原创 `StyleLens`；人名只保留在 source refs，不把 persona identity 传给 writer/provider。
+7. 选择一个 primary Skill。只有连续性、风格、生产约束或明确输入依赖需要时，增加一个 compatible constraint Skill。
+8. 按 `active → resolved_local_on_demand → needs_profile_promotion → needs_install_decision` 顺序解析 Skill。一次性任务默认停在 local on-demand，不执行持久化 activation。
+9. 若项目高频需要该 Skill，生成宿主无关的 `SkillActivationPlan`。宿主声明了启用适配器时可交给该适配器；未声明时只返回 proposal。没有当前用户的明确启用/安装授权时不得执行持久化变更。
+10. 生成 Owner handoff、gates 和下一动作。在 provider call、canonical 修改、主体冻结、持久化 activation、production acceptance、export 或 publish 前停在对应 gate。**分镜/导演方向门禁**：任何付费资产生成（出图、视频、配音）之前，必须把分镜方向——故事脊柱、逐镜节拍、对白主干、视觉基调、时长合同——以用户能直接判断的形式显式呈现并获得当前用户确认；未确认不得进入生成阶段。
 
 ## 核心路由
 
@@ -65,6 +67,7 @@ Router 不代写完整剧本、不成为新的创作数据库，也不为一次�
 
 - `needs_format_decision`：承载形态不清且会改变结构。
 - `needs_context`：关键 canon、人物、连续性或生产事实缺失。
+- `needs_audio_intent`：原生音频 route 或音频相关镜头缺少逐镜 cue、policy、final mix owner 或验收门禁。
 - `needs_style_lens`：点名人物/作品风格但没有维度化原创约束。
 - `writer_conflict`：多个 writer 声称同一 canonical artifact。
 - `needs_install_decision`：本地 source 不存在，或需要外部代码/工具。

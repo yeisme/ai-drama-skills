@@ -30,7 +30,7 @@ eikona generate \
   --size 2k \
   --aspect 2:3 \
   --quality high \
-  --json
+  --agent
 ```
 
 ## 质量门槛

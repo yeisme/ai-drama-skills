@@ -1,4 +1,4 @@
 interface:
   display_name: "AI 做剧矩阵路由器"
-  short_description: "用剧型、类型、阶段与上下文矩阵按需选择最小做剧 Skills"
-  default_prompt: "请使用 $ai-drama-router 判断这个项目的剧型、类型、阶段和上下文包，按需选择最小 Skill，并给出启用状态、Owner 门禁和下一步。"
+  short_description: "按剧型、阶段、音画合同与上下文矩阵选择最小做剧 Skills"
+  default_prompt: "请使用 $ai-drama-router 判断这个项目的剧型、类型、阶段、音画合同和上下文包，按需选择最小 Skill；若视频模型可能生成音频，先检查逐镜 ShotAudioIntent，再给出启用状态、Owner 门禁和下一步。"
