@@ -1,0 +1,4 @@
+interface:
+  display_name: "漫剧项目启动器"
+  short_description: "交互创建或迁移精简、可本地化的 Auctra + Scaena 做剧工作区"
+  default_prompt: "请使用漫剧项目启动器，先确认路径、标题、集数、现有 owner 状态和显式 locale，再展示计划、调用 Auctra 与 Scaena CLI，并保持 review 与 production acceptance 边界。"

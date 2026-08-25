@@ -12,6 +12,7 @@ Skill 是执行指导，不是第二套故事数据库。实现或修改跨项�
 - `ai-drama-router/references/routing-matrix.md`
 - `ai-drama-router/references/skill-resolution-policy.md`
 - `ai-drama-router/references/drama-route-plan-contract.md`
+- `ai-drama-router/references/upstream-video-production-patterns.md`
 - `ai-drama-format-strategist/references/format-profiles.md`
 - `ai-drama-context-pack-builder/references/context-pack-profiles.md`
 - `ai-drama-producer/references/production-constraints.md`

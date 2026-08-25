@@ -19,18 +19,26 @@ canonical_owner: story_canon_owner
 
 ## 2. 竖屏复仇短剧
 
-请求：做 60 集竖屏复仇短剧，先确定前 10 集的回报和钩子。
+请求：做 60 集竖屏复仇短剧，优化人物、对白、爽点和钩子。
 
 若集长、受众和核心类型未定：先路由 `ai-drama-format-strategist`。合同接受后：
 
 ```text
 format_profile: vertical-short-drama
-phase: series_plan
-artifact: episode_arc_1_10
+phase: proof_slice
+artifact: three_episode_core_scene_candidates
 context_pack_profile: series-development
 primary_skill: ai-drama-showrunner
 compatible_skill: ai-drama-story-architecture
+artifact_disposition: candidate
+persistence_policy: chat_only
+batch_policy: proof_slice
+acceptance_state: unreviewed
+owner_action: request_selection
+next_action: 为三集各写一个核心场景的 A/B 策略候选；用户确认主要人物声音前停止
 ```
+
+不应先写 60 集，也不应把前 10 集集纲视为已经接受。三集通过状态变化、证据、Dialogue Live Test 和用户声音选择后，下一批最多扩写 5 集。
 
 ## 3. AI 漫剧镜头生产
 
@@ -107,3 +115,32 @@ status: needs_activation_decision
 ```
 
 返回 proposal 和手工下一步，不猜测命令或配置文件。
+
+## 9. 用户要求写 Markdown 文件
+
+请求：把这版短剧试写成 Markdown 给我。
+
+```text
+output_format: markdown
+artifact_disposition: candidate
+persistence_policy: chat_only
+batch_policy: bounded_batch
+acceptance_state: unreviewed
+owner_action: request_selection
+```
+
+Markdown 只是格式。若用户没有明确授权写入项目或选择候选，Router 不应创建最终项目文件，也不能把该文件当作 canonical source。
+
+## 10. 用户选择候选，但尚未接受为 canonical
+
+请求：第二版人物更像活人，就用 B。
+
+```text
+artifact_disposition: canonical_proposal
+persistence_policy: review_workspace
+acceptance_state: selected
+owner_action: promote_for_review
+status: needs_input
+```
+
+`selected` 允许进入 owner review，不允许直接写 canonical。只有 owner 的显式 accept receipt 才能将状态推进为 `accepted`。

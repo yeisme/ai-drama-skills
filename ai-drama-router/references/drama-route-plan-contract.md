@@ -18,6 +18,11 @@ phase
 artifact
 task_role
 context_pack_profile?
+output_format?
+artifact_disposition
+persistence_policy
+batch_policy
+acceptance_state
 primary_skill:
   name
   source_kind
@@ -32,6 +37,7 @@ input_refs[]
 missing_inputs[]
 gates[]
 activation_plan?
+expansion_gate?
 owner_action
 next_action
 status
@@ -62,6 +68,32 @@ status
 - `blocked`
 - `stale`
 
+`artifact_disposition`：
+
+- `preview`
+- `candidate`
+- `canonical_proposal`
+- `export`
+
+`persistence_policy`：
+
+- `chat_only`
+- `os_temp`
+- `review_workspace`
+- `canonical`
+
+`batch_policy`：
+
+- `proof_slice`
+- `bounded_batch`
+- `full_scale`
+
+`acceptance_state`：
+
+- `unreviewed`
+- `selected`
+- `accepted`
+
 ## 不变量
 
 1. 每个 stage 恰好一个 primary，最多一个 compatible constraint。
@@ -70,9 +102,14 @@ status
 4. activation plan 与 production plan 分离；启用 Skill 不代表允许 provider call 或 canonical mutation。
 5. plan 中不包含 Skill body、raw prompt、完整剧本、provider payload、凭据、私有路径或完整思维链。
 6. 原生音频能力未知时不得从字段缺失推断为无音频；缺 `ShotAudioIntent`、replacement route 或独立 audio review gate 时 stage 不得标为 `ready`。
+7. `output_format` 与 persistence/acceptance 正交；Markdown、Fountain 或文件名不得隐式推进 `acceptance_state`。
+8. `preview/candidate + unreviewed` 不得写最终项目路径，也不得成为 canonical ContextPack 输入。
+9. `selected` 只允许进入 owner review；只有 canonical owner 的 typed accept receipt 才能得到 `accepted`。
+10. 新写或大幅重写超过 5 集时默认 `proof_slice`；未通过状态变化、诚实证据、Dialogue Live Test 和用户声音选择前不得进入更大批次。
+11. 被删除、未选、拒绝或只存在于聊天记忆的文本不得恢复为 accepted source。
 
 ## Host projection
 
-转换到宿主运行时计划时，只传输：Skill name/ref/version/digest/source kind、stage、logical owner、可选 owner binding、input/output contract、compatibility basis 和 pinned 状态。
+转换到宿主运行时计划时，只传输：Skill name/ref/version/digest/source kind、stage、logical owner、可选 owner binding、input/output contract、artifact disposition、persistence、batch、acceptance、compatibility basis 和 pinned 状态。
 
 宿主运行时不应依赖 Router 的文件路径或读取完整 `SKILL.md` 来恢复生产状态，也不应重新执行语义发现。Router 包不得内置某个宿主产品名、仓库路径、profile 文件或私有命令。

@@ -6,6 +6,7 @@
 
 ## 能力分组
 
+- 项目启动：`manga-drama-project-starter`（默认英文、显式中文、Auctra + Scaena lazy workspace）
 - 路由与策略：`ai-drama-router`、`ai-drama-format-strategist`、`ai-drama-context-pack-builder`
 - 故事与人物：`ai-drama-story-architecture`、`ai-drama-character-engine`、`ai-drama-showrunner`
 - 场景与导演：`screenplay-scene-writer`、`ai-drama-director`、`ai-drama-video-reference-director`
@@ -23,6 +24,12 @@ python3 ai-drama-router/scripts/validate_drama_matrix.py
 ```
 
 把需要的 Skill 目录安装到宿主支持的 Skills source 或 runtime 中。宿主负责 catalog、activation、权限和 canonical state；本仓库不绑定某个 profile 脚本或产品数据库。
+
+## 上游视频生产参考
+
+`ai-drama-router/references/upstream-video-production-patterns.md` 固定记录 MoneyPrinterTurbo、video-shotcraft、AI-Youtube-Shorts-Generator、Remotion Skills、FireRed-OpenStoryline、jianying-editor-skill、claude-code-video-toolkit 与 rnskill 的参考 commit、许可证立场、采用模式和禁止边界。
+
+这些项目只在请求命中对应视频场景时按需提供 pattern evidence。Router 不在生产 stage 中联网更新，不整包导入上游运行时，也不让外部项目替代宿主的 canonical owner。更新时先审查 commit diff 和许可证，再为新 route plan 更换固定 snapshot；旧 plan 永远保留旧 lineage。
 
 ## 目录约定
 

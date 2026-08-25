@@ -3,8 +3,11 @@
 
 from __future__ import annotations
 
+import json
 import re
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -53,6 +56,45 @@ def main() -> int:
         for marker in FORBIDDEN_PORTABILITY_MARKERS:
             if marker in text:
                 errors.append(f"{skill_file}: contains host-specific path {marker}")
+
+    recipe_script = ROOT / "manga-drama-project-starter" / "scripts" / "generate_workspace_recipe.py"
+    required_roles = {
+        "screenplay_root",
+        "planning_outline",
+        "story_bible_characters",
+        "story_bible_world",
+        "story_continuity",
+        "screenplay_episodes",
+        "screenplay_scenes",
+        "materials",
+        "review_exports",
+        "exports",
+    }
+    for locale in ("en-US", "zh-CN"):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output = Path(temp_dir) / "recipe.json"
+            result = subprocess.run(
+                [sys.executable, str(recipe_script), "--locale", locale, "--output", str(output)],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode != 0:
+                errors.append(f"manga-drama recipe generation failed for {locale}: {result.stderr.strip()}")
+                continue
+            payload = json.loads(output.read_text(encoding="utf-8"))
+            roles = set(payload.get("workspace_roles", []))
+            if payload.get("schema_version") != "workspace_recipe.v1":
+                errors.append(f"manga-drama recipe {locale}: invalid schema_version")
+            if payload.get("profile") != "manga-drama" or payload.get("locale") != locale:
+                errors.append(f"manga-drama recipe {locale}: profile/locale mismatch")
+            if payload.get("materialization") != "on_demand":
+                errors.append(f"manga-drama recipe {locale}: materialization must be on_demand")
+            missing_roles = sorted(required_roles - roles)
+            if missing_roles:
+                errors.append(f"manga-drama recipe {locale}: missing roles {missing_roles}")
+            if roles & {"manuscript_root", "manuscript_chapters"}:
+                errors.append(f"manga-drama recipe {locale}: contains novel manuscript roles")
 
     if errors:
         print("FAIL: AI Drama Skills validation failed", file=sys.stderr)
