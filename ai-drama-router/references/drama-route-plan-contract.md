@@ -14,6 +14,8 @@ format_profile
 genre_lens:
   primary
   secondary?
+originality_mode
+originality_decision_ref
 phase
 artifact
 task_role
@@ -36,6 +38,7 @@ owner_binding?
 input_refs[]
 missing_inputs[]
 gates[]
+similarity_review_gate?
 activation_plan?
 expansion_gate?
 owner_action
@@ -46,6 +49,8 @@ status
 多阶段任务增加 `stage_plans[]`，每个元素包含 `stage_kind`、一个 `primary_skill`、最多一个 `compatible_skill`、输入/输出合同、Owner 和 gate。
 
 视频 route 可能生成原生音频时，相关 stage 还必须携带 refs-only `shot_audio_intent_ref/digest`、`provider_audio_policy`、`video_audio_capability_ref/digest`、`final_mix_owner_ref` 和独立 `audio_review_gate`；完整合同见 `shot-audio-intent-contract.md`。
+
+任何 Story、Screenplay、Director、Visual、Audio、Generation、Assembly 或 Delivery stage 都必须引用 refs-only `originality_decision_ref`。`originality_mode` 的取值、权利和相似性门禁见 `originality-and-reference-policy.md`。
 
 ## 状态
 
@@ -107,9 +112,11 @@ status
 9. `selected` 只允许进入 owner review；只有 canonical owner 的 typed accept receipt 才能得到 `accepted`。
 10. 新写或大幅重写超过 5 集时默认 `proof_slice`；未通过状态变化、诚实证据、Dialogue Live Test 和用户声音选择前不得进入更大批次。
 11. 被删除、未选、拒绝或只存在于聊天记忆的文本不得恢复为 accepted source。
+12. `pure_original` 不得依赖改名、换脸、换色、同义改写或替换时代背景来规避相似性；出现受保护表达风险、身份泄漏或未知权利时必须阻断生产和 export。
+13. `OriginalityDecision` 只保存 refs、判断和差异化约束；不得嵌入受保护作品全文、raw prompt、provider payload 或完整内部推理。
 
 ## Host projection
 
-转换到宿主运行时计划时，只传输：Skill name/ref/version/digest/source kind、stage、logical owner、可选 owner binding、input/output contract、artifact disposition、persistence、batch、acceptance、compatibility basis 和 pinned 状态。
+转换到宿主运行时计划时，只传输：Skill name/ref/version/digest/source kind、stage、logical owner、可选 owner binding、input/output contract、originality mode/decision ref、artifact disposition、persistence、batch、acceptance、compatibility basis 和 pinned 状态。
 
 宿主运行时不应依赖 Router 的文件路径或读取完整 `SKILL.md` 来恢复生产状态，也不应重新执行语义发现。Router 包不得内置某个宿主产品名、仓库路径、profile 文件或私有命令。

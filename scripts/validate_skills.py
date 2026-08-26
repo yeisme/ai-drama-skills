@@ -57,6 +57,46 @@ def main() -> int:
             if marker in text:
                 errors.append(f"{skill_file}: contains host-specific path {marker}")
 
+    router_dir = ROOT / "ai-drama-router"
+    originality_ref = router_dir / "references" / "originality-and-reference-policy.md"
+    if not originality_ref.is_file():
+        errors.append(f"{originality_ref}: missing originality contract")
+    else:
+        originality_text = originality_ref.read_text(encoding="utf-8")
+        for required in (
+            "pure_original",
+            "licensed_adaptation",
+            "reference_constrained",
+            "transformative_research",
+            "similarity_review_required",
+        ):
+            if required not in originality_text:
+                errors.append(f"{originality_ref}: missing {required}")
+
+    orchestrator_dir = ROOT / "ai-drama-production-orchestrator"
+    production_ref = (
+        orchestrator_dir
+        / "references"
+        / "original-manga-drama-production-loop.md"
+    )
+    if not production_ref.is_file():
+        errors.append(f"{production_ref}: missing original production loop")
+    else:
+        production_text = production_ref.read_text(encoding="utf-8")
+        for required in (
+            "auctra production handoff export",
+            "scaena asset draw plan",
+            "scaena video episode-preview",
+            "scaena edit select",
+            "openai/gpt-5.4-image-2",
+            "workflow_goal_unavailable",
+            "fixture-only",
+        ):
+            if required not in production_text:
+                errors.append(f"{production_ref}: missing {required}")
+        if "export package --dry-run" in production_text:
+            errors.append(f"{production_ref}: uses unsupported export --dry-run flag")
+
     recipe_script = ROOT / "manga-drama-project-starter" / "scripts" / "generate_workspace_recipe.py"
     required_roles = {
         "screenplay_root",

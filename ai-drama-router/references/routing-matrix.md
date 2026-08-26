@@ -2,6 +2,17 @@
 
 复杂任务由 `ai-drama-production-orchestrator` 编排；Router 自身不并发写作。每个阶段恰好一个 primary Skill，最多一个 constraint Skill。
 
+## 全局原创性门禁
+
+阶段矩阵开始前先生成 `OriginalityDecision`：
+
+- `pure_original`：从项目 canon 建立原创故事、角色、对白、视觉身份和声音身份；
+- `licensed_adaptation`：只在授权范围内改编；
+- `reference_constrained`：只消费维度化约束和 source refs；
+- `transformative_research`：只产出研究/差异化证据，不直接成为发行资产。
+
+Story 到 Delivery 的每个 stage 都引用同一 decision lineage。出现 `reference_rights_unknown`、`protected_expression_risk`、`style_identity_leak`、`similarity_review_required` 或 `adaptation_not_authorized` 时，ProductionGraph 必须停在对应 owner gate。
+
 ## 阶段矩阵
 
 | `phase` | 当前 artifact / 用户工作 | Primary Skill | 可选 constraint | `context_pack_profile` | Canonical owner |
@@ -43,6 +54,8 @@
 - StyleLens、Continuity、Producer 可以作为约束，但不得与 primary writer 竞争 artifact ownership。
 - 跨阶段不等于同时运行所有 Skill；先输出有序 stage plan，再逐阶段解析。
 - production/cost/rights blocker 不能被创作质量分或用户一句“继续”覆盖。
+- 原创性 blocker 不能被主体 `selected`/`frozen`、高分候选、production acceptance 或 export 请求覆盖。
+- `pure_original` 不能通过改名、换脸、换色、同义改写或替换时代背景从单一作品派生。
 - 支持或可能生成原生音频的 route 在 `director_plan` 缺少版本化 `ShotAudioIntent` 时不得进入 generation；视觉 pass 不得自动继承为音频 pass。
 
 ## 交互模式

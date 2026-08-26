@@ -1,4 +1,4 @@
 interface:
   display_name: "AI 做剧生产总编排"
-  short_description: "按矩阵、逐镜音画合同和最小上下文编排跨 Owner 做剧闭环"
-  default_prompt: "请使用 $ai-drama-production-orchestrator 消费 DramaRoutePlan，为每个阶段固定最小上下文、一个主 Skill、逐镜 ShotAudioIntent、Owner handoff、独立音频审查、恢复和交付门禁。"
+  short_description: "从 Auctra 原创剧本到 Scaena 抽卡、拼接、精修和成片导出"
+  default_prompt: "请使用 $ai-drama-production-orchestrator 消费 DramaRoutePlan 与 OriginalityDecision，先核对当前 Auctra/Scaena 命令能力，再按 Auctra 原创 canon、Scaena 分镜、主体抽卡、逐镜音画、整集拼接、缺陷归属精修、交付审查和导出顺序编排；为每阶段固定最小上下文、Owner handoff、门禁、receipt、evidence 和恢复动作，不把目标态伪装成已实现能力。"

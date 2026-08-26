@@ -14,6 +14,23 @@
 - 评审与生产：`ai-drama-critic-panel`、`ai-drama-continuity-supervisor`、`ai-drama-producer`、`ai-drama-production-orchestrator`
 - Owner 交接：`auctra-ai-drama-panel-handoff`
 
+## 纯原创成片流水线
+
+完整链路由 `ai-drama-production-orchestrator` 编排：
+
+```text
+OriginalityDecision
+→ Auctra 原创 premise / 人物 / proof slice / accepted screenplay
+→ Scaena typed handoff / 分镜拆解 / 用户方向确认
+→ 主体依赖波次 / Eikona 抽卡 / human select + freeze
+→ 逐镜音画候选 / 连续性与独立音频评审 / production acceptance
+→ episode preview / edit timeline variants / cut selection
+→ 按缺陷 owner 进行有界精修
+→ delivery review / checksummed export package
+```
+
+执行矩阵、真实命令、恢复语义和完成条件见 `ai-drama-production-orchestrator/references/original-manga-drama-production-loop.md`。运行前必须读取 `scaena workflow list --agent`；未注册的整集 goal 不能被文档或 Agent 伪装成已实现的一键能力。
+
 ## 使用
 
 ```bash

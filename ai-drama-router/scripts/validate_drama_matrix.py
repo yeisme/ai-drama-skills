@@ -13,6 +13,8 @@ ROUTER_REFERENCES = (
     "skill-resolution-policy.md",
     "drama-route-plan-contract.md",
     "artifact-lifecycle.md",
+    "originality-and-reference-policy.md",
+    "shot-audio-intent-contract.md",
     "upstream-video-production-patterns.md",
     "route-examples.md",
 )
@@ -76,6 +78,12 @@ def main() -> None:
     examples_text = (references_dir / "route-examples.md").read_text(
         encoding="utf-8"
     )
+    contract_text = (references_dir / "drama-route-plan-contract.md").read_text(
+        encoding="utf-8"
+    )
+    originality_text = (
+        references_dir / "originality-and-reference-policy.md"
+    ).read_text(encoding="utf-8")
     if "Markdown 文件存在 ≠ 用户认可内容" not in lifecycle_text:
         fail("artifact lifecycle must separate output format from acceptance")
     if (
@@ -88,6 +96,33 @@ def main() -> None:
         or "acceptance_state: unreviewed" not in examples_text
     ):
         fail("route examples must keep the Markdown-without-acceptance fixture")
+    for field in ("originality_mode", "originality_decision_ref"):
+        if field not in skill_text or field not in contract_text:
+            fail(f"router originality contract is missing field: {field}")
+    for mode in (
+        "pure_original",
+        "licensed_adaptation",
+        "reference_constrained",
+        "transformative_research",
+    ):
+        if mode not in originality_text:
+            fail(f"originality policy is missing mode: {mode}")
+    for failure_code in (
+        "needs_originality_decision",
+        "reference_rights_unknown",
+        "protected_expression_risk",
+        "style_identity_leak",
+        "similarity_review_required",
+        "adaptation_not_authorized",
+    ):
+        if failure_code not in originality_text or failure_code not in skill_text:
+            fail(f"originality failure state is missing: {failure_code}")
+    if (
+        "纯原创竖屏漫剧全链路" not in examples_text
+        or "story_canon_and_screenplay" not in examples_text
+        or "production_delivery_review_and_export" not in examples_text
+    ):
+        fail("route examples must keep the pure-original end-to-end fixture")
     upstream_text = (
         references_dir / "upstream-video-production-patterns.md"
     ).read_text(encoding="utf-8")

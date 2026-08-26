@@ -1,6 +1,6 @@
 ---
 name: ai-drama-production-orchestrator
-description: Use when coordinating a DramaRoutePlan across AI drama format, context, story, screenplay, directing, visual, evaluation, continuity, audio, and production stages owned by Auctra, Ordo, Eikona, Scaena, Sonora, or related services with typed handoffs, bounded parallelism, approvals, retries, receipts, evidence, and guided-to-unattended maturity.
+description: Use when coordinating a complete original AI drama or manga-drama pipeline from Auctra story and screenplay canon through Scaena storyboard breakdown, subject-card drawing, shot generation, episode assembly, defect-routed refinement, delivery review, and final export, with Eikona/Sonora/Ordo handoffs, originality and rights gates, bounded retries, receipts, evidence, and honest current-capability checks.
 ---
 
 # AI Drama Production Orchestrator
@@ -8,6 +8,14 @@ description: Use when coordinating a DramaRoutePlan across AI drama format, cont
 ## 目标
 
 编排“做剧”闭环，而不是成为新的领域数据库。以 `DramaRoutePlan` 为入口，每个阶段只加载一个 primary Skill、最多一个 constraint Skill和一个最小 `DramaContextPack`；所有状态变化使用 typed refs、版本、digest、Owner receipt 和显式下一动作。
+
+## 必读参考
+
+- 纯原创 Auctra → Scaena → 抽卡 → 逐镜 → 拼接 → 精修 → 导出的执行矩阵、真实命令和完成条件：`references/original-manga-drama-production-loop.md`。
+- canonical owner、revision 和 mutation boundary：`../ai-drama-router/references/canon-boundary.md`。
+- 原创性、参考素材、权利与相似性 gate：`../ai-drama-router/references/originality-and-reference-policy.md`。
+- 逐镜音频意图：`../ai-drama-router/references/shot-audio-intent-contract.md`。
+- 成本、权限和生产约束：`../ai-drama-producer/references/production-constraints.md`。
 
 ## 三种运行模式
 
@@ -17,19 +25,23 @@ description: Use when coordinating a DramaRoutePlan across AI drama format, cont
 
 ## 工作流
 
-1. 消费 `ai-drama-router` 的 `DramaRoutePlan`；若剧型/类型未冻结，先完成 `ai-drama-format-strategist`，不得直接进入 Writer 或 provider。
-2. 读取 `ai-drama-router/references/canon-boundary.md` 与 `ai-drama-producer/references/production-constraints.md`，编译 CreativeBrief、CanonSnapshot、DirectorProfile 和 ProductionConstraintProfile。
-3. 视频路线可能生成原生音频时，读取 `ai-drama-router/references/shot-audio-intent-contract.md`；把 `screenplay/dialogue → ShotAudioIntent → capability/policy → video-native registration or Sonora render → sound review → Scaena assembly` 建成显式 stage handoff。
-4. 为每个 stage 调用 `ai-drama-context-pack-builder` 生成最小、版本化、可失效的上下文包；不得把上一个阶段的全量上下文原样传给所有下游。
-5. 逐阶段调度 Story/Character/Showrunner/Scene Writer/Director/Visual/Critic/Continuity/Edit/Sound/Producer Skills。Skill 未 active 时按需读取本地 source；production run 中不得安装、更新或热切换。
-6. 在 Ordo 中执行并行候选和评委任务，保存 attempt/receipt/evidence。
-7. 把 Auctra screenplay、Eikona artifact、Sonora audio refs/mix refs 和评估推荐交给对应 Owner；不跨边界写入。视频原生音频只登记 parent video、policy 和 review facts，不伪装成已接受 mix。
-8. 处理 review、repair、pause、resume、partial failure、unknown accept、Skill/context drift 和 stale invalidation。镜头时长、对白 span、audio cue、provider audio policy、capability digest 或 Sonora mix revision 变化时，只使受影响的未开始后代 stale。
-9. 读取 `ai-drama-continuity-supervisor/references/continuity-evidence.md`；只在 Scaena 明确选择、连续性检查、独立音频 review、production acceptance 和 delivery review 后结束。
+1. 消费 `ai-drama-router` 的 `DramaRoutePlan` 与 `OriginalityDecision`；若剧型/类型/原创性未冻结，先完成对应 gate，不得直接进入 Writer 或 provider。
+2. 检查 `auctra --help`、`scaena --help` 和 `scaena workflow list --agent`。只调用当前真实存在的命令或已注册 goal；没有 `shortdrama.episode-production` 时不得声称“一键整集”已经可用。
+3. 编译 CreativeBrief、CanonSnapshot、DirectorProfile、ProductionConstraintProfile 和 capability ledger；把 current、partial、target 明确分开。
+4. 在 Auctra 中完成原创 premise、人物、proof slice、剧本候选、评审、accepted screenplay revision 和 Scaena handoff。选择候选不等于 canonical acceptance。
+5. 在 Scaena 中导入 handoff、拆解分镜，并在任何付费生成前显式呈现和确认故事脊柱、逐镜节拍、对白主干、视觉基调与时长合同。
+6. 建立主体依赖波次；通过 DrawSession plan/start、Eikona 生成、record、human-only select/freeze 完成抽卡。`selected`/`frozen` 不等于 shot/production/export acceptance。
+7. 视频路线可能生成原生音频时，把 `screenplay/dialogue → ShotAudioIntent → capability/policy → video-native registration or Sonora render → sound review → Scaena assembly` 建成显式 stage handoff。
+8. 为每个 stage 生成最小、版本化、可失效的 `DramaContextPack`；不得把上一个阶段的全量上下文原样传给所有下游。
+9. 逐镜生成候选，按 visual、audio、continuity、human review 和 production acceptance 顺序推进。Ordo 可运行有界并行候选/评委并保存 evidence，但不获得 owner 权限。
+10. 用 Scaena episode preview、edit plan/timeline/render/score/select 完成拼接与选版；自动评分只生成 recommendation。
+11. 先分类缺陷，再回 Auctra、storyboard、asset/Eikona、shot generation、Sonora、edit 或 delivery owner 产生 successor。每个失败只允许一个有界 repair loop；不得无限 reroll 或覆盖最终文件。
+12. 处理 pause/resume、partial failure、unknown accept、Skill/context drift 和 stale invalidation。只使受影响的未开始后代 stale。
+13. 只在 Scaena 明确选择、连续性检查、独立音频 review、production acceptance、originality/rights review、delivery review 与用户要求的 export receipt 全部存在后结束。Export 不自动等于 publish。
 
 ## 阶段计划
 
-每个 `stage_plan` 至少固定：`stage_kind`、`context_pack_ref/digest`、一个 `primary_skill`、可选 `constraint_skill`、Owner、input/output contract、gates 和 next action。未开始阶段可因 Skill/context drift 标为 stale；运行中或已完成 Owner job 保留原 pinned lineage。
+每个 `stage_plan` 至少固定：`stage_kind`、`context_pack_ref/digest`、`originality_decision_ref`、一个 `primary_skill`、可选 `constraint_skill`、Owner、input/output contract、gates、receipt/evidence refs 和 next action。未开始阶段可因 Skill/context drift 标为 stale；运行中或已完成 Owner job 保留原 pinned lineage。
 
 ## 状态不变量
 
@@ -39,6 +51,12 @@ generated → assessed_visual + assessed_audio → recommended → human_review 
 ```
 
 禁止 `assessed → selected`、`recommended → production_accepted`、视觉 pass 自动继承音频 pass，和“provider succeeded 即交付”。
+
+## 当前能力边界
+
+- 当前默认运行方式是细粒度阶段命令和已注册 workflow 的组合。
+- `scaena enhance run` v1 只允许 fixture 驱动验证，不能宣称真实付费 enhancement provider 已接通。
+- 全自动整集 goal、全异常无人值守恢复和平台发布是 target；缺少真实命令、receipt 或用户授权时返回 blocker。
 
 ## 验证
 

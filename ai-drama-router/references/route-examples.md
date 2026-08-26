@@ -7,6 +7,8 @@
 ```text
 format_profile: us-hour-drama
 genre_lens.primary: crime-mystery
+originality_mode: pure_original
+originality_decision_ref: originality:crime-pilot:v1
 phase: series_plan
 artifact: series_bible
 context_pack_profile: series-development
@@ -25,6 +27,8 @@ canonical_owner: story_canon_owner
 
 ```text
 format_profile: vertical-short-drama
+originality_mode: pure_original
+originality_decision_ref: originality:revenge-proof-slice:v1
 phase: proof_slice
 artifact: three_episode_core_scene_candidates
 context_pack_profile: series-development
@@ -62,6 +66,8 @@ canonical_owner: story_canon_owner proposal / production_owner intent
 
 ```text
 format_profile: feature-film
+originality_mode: pure_original
+originality_decision_ref: originality:firefighter-feature:v1
 phase: define
 artifact: story_architecture
 context_pack_profile: series-development
@@ -144,3 +150,41 @@ status: needs_input
 ```
 
 `selected` 允许进入 owner review，不允许直接写 canonical。只有 owner 的显式 accept receipt 才能将状态推进为 `accepted`。
+
+## 11. 纯原创竖屏漫剧全链路
+
+请求：从零做一部纯原创 12 集竖屏漫剧，由故事 canon owner 建立剧本，再交给 production owner 做分镜、主体候选、拼接、精修和成片导出。
+
+```text
+goal: pure_original_vertical_manga_drama
+format_profile: manga-drama
+originality_mode: pure_original
+originality_decision_ref: originality:vertical-manga-drama:v1
+artifact: end_to_end_production_run
+primary_skill: ai-drama-production-orchestrator
+compatible_skill: ai-drama-producer
+canonical_owner: story_canon_owner + production_owner
+artifact_disposition: canonical_proposal
+persistence_policy: review_workspace
+batch_policy: proof_slice
+acceptance_state: unreviewed
+stage_plans:
+  - story_canon_and_screenplay
+  - storyboard_breakdown_and_acceptance
+  - subject_candidate_select_and_freeze
+  - shot_generation_and_review
+  - episode_assembly
+  - owner_routed_refinement
+  - production_delivery_review_and_export
+gates:
+  - originality_and_rights
+  - screenplay_acceptance
+  - storyboard_direction_confirmation
+  - paid_provider_confirmation
+  - human_subject_selection_and_freeze
+  - shot_quality_and_audio_review
+  - edit_cut_selection
+  - delivery_and_export_confirmation
+```
+
+该计划不把“一键”解释为已有的单命令 goal。Orchestrator 先检查宿主声明的 capability registry，只调用真实存在的细粒度 capability 或已注册 workflow；完整 episode production goal 未注册时返回 capability gap，而不是伪造自动化。任何相似性风险都返回 `similarity_review_required`，并回到对应 owner 产生 successor candidate。
