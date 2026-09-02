@@ -58,6 +58,26 @@ def main() -> int:
                 errors.append(f"{skill_file}: contains host-specific path {marker}")
 
     router_dir = ROOT / "ai-drama-router"
+    assessment_dir = ROOT / "ai-drama-assessment"
+    assessment_skill = assessment_dir / "SKILL.md"
+    assessment_contract = assessment_dir / "references" / "assessment-contract.md"
+    if not assessment_skill.is_file() or not assessment_contract.is_file():
+        errors.append(f"{assessment_dir}: missing assessment Skill or contract")
+    else:
+        assessment_text = assessment_skill.read_text(encoding="utf-8")
+        contract_text = assessment_contract.read_text(encoding="utf-8")
+        for required in (
+            "dialogue_liveability",
+            "narrative_naturalness",
+            "structural_formula_risk",
+            "naturalness_score",
+            "pattern_risk",
+            "exemption_ref",
+            "作者来源概率",
+        ):
+            if required not in assessment_text + contract_text:
+                errors.append(f"{assessment_dir}: missing naturalness contract marker {required}")
+
     originality_ref = router_dir / "references" / "originality-and-reference-policy.md"
     if not originality_ref.is_file():
         errors.append(f"{originality_ref}: missing originality contract")

@@ -15,6 +15,14 @@ ROUTER_REFERENCES = (
     "artifact-lifecycle.md",
     "originality-and-reference-policy.md",
     "shot-audio-intent-contract.md",
+    "video-model-capability-index.md",
+    "video-model-profile-minimax-h3.md",
+    "video-model-profile-wan-3-0.md",
+    "seedance-2-5-capability-profile.md",
+    "video-model-profile-kling-v3.md",
+    "video-model-profile-kling-v3-omni.md",
+    "video-model-drama-workflow-matrix.md",
+    "video-model-community-research-2026-09-01.md",
     "upstream-video-production-patterns.md",
     "route-examples.md",
 )
@@ -31,6 +39,7 @@ REQUIRED_SKILL_NAMES = (
     "ai-drama-video-reference-director",
     "ai-drama-visual-language",
     "ai-drama-edit-and-sound",
+    "ai-drama-assessment",
     "ai-drama-continuity-supervisor",
     "ai-drama-critic-panel",
     "ai-drama-producer",
@@ -81,6 +90,84 @@ def main() -> None:
     contract_text = (references_dir / "drama-route-plan-contract.md").read_text(
         encoding="utf-8"
     )
+
+    for field in (
+        "assessment_contract_ref",
+        "assessment_state",
+        "score_eligibility",
+        "naturalness_profile",
+        "naturalness_lanes",
+        "naturalness_report_refs",
+        "naturalness_score_policy",
+    ):
+        if field not in skill_text or field not in contract_text:
+            fail(f"router assessment contract is missing field: {field}")
+    for lane in (
+        "dialogue_liveability",
+        "narrative_naturalness",
+        "structural_formula_risk",
+    ):
+        if lane not in matrix_text or lane not in contract_text:
+            fail(f"router naturalness contract is missing lane: {lane}")
+    for failure_code in (
+        "needs_assessment_contract",
+        "score_not_applicable",
+        "assessment_not_comparable",
+        "naturalness_not_comparable",
+        "author_source_inference_forbidden",
+    ):
+        if failure_code not in skill_text:
+            fail(f"router assessment failure state is missing: {failure_code}")
+
+    model_index_text = (references_dir / "video-model-capability-index.md").read_text(
+        encoding="utf-8"
+    )
+    workflow_matrix_text = (
+        references_dir / "video-model-drama-workflow-matrix.md"
+    ).read_text(encoding="utf-8")
+    community_text = (
+        references_dir / "video-model-community-research-2026-09-01.md"
+    ).read_text(encoding="utf-8")
+    for family in (
+        "minimax_h3",
+        "wan",
+        "seedance",
+        "kling_v3",
+        "kling_v3_omni",
+    ):
+        if family not in model_index_text:
+            fail(f"video model capability index is missing family: {family}")
+    for field in (
+        "binding_mode",
+        "non_binding",
+        "required_capabilities",
+        "eligible_model_families",
+        "suggested_model_family",
+        "suggestion_basis",
+        "workflow_profile_ref",
+        "workflow_profile_digest",
+    ):
+        if field not in contract_text:
+            fail(f"video model guidance contract is missing field: {field}")
+    if (
+        "社区热度" not in model_index_text
+        or "不得" not in model_index_text
+        or "research_signal" not in community_text
+    ):
+        fail("community research must remain non-routing research_signal")
+    for scenario_id in (
+        "short_dialogue_shot",
+        "action_camera_reference",
+        "first_last_frames",
+        "keyframe_storyboard",
+        "video_edit_extend",
+        "long_take_20_30s",
+        "h3_2k_refinement",
+        "native_audio_candidate",
+        "post_replace_audio",
+    ):
+        if scenario_id not in workflow_matrix_text:
+            fail(f"video drama workflow matrix is missing scenario: {scenario_id}")
     originality_text = (
         references_dir / "originality-and-reference-policy.md"
     ).read_text(encoding="utf-8")

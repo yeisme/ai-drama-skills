@@ -12,7 +12,7 @@ Auctra owns accepted text, Story World refs, source revisions and review decisio
 ## Workflow
 
 1. Read `cli/auctra/openspec/changes/auctra-ai-drama-story-handoff-v1/` and confirm the source revision is accepted and not stale.
-2. Freeze `subject_ref`, `subject_scope`, `context_ref`, `profile_ref`, `rubric_digest`, `hard_gate_refs`, `owner_grant` and a stable `idempotency_key`. Do not place screenplay text, prompt text, provider payloads or private Ordo state in the packet.
+2. Freeze `subject_ref`, `subject_scope`, `context_ref`, `assessment_contract_ref`, `format_profile`, `genre_lens`, `evaluation_intent`, `profile_ref`, `rubric_digest`, `hard_gate_refs`, `owner_grant` and a stable `idempotency_key`. If naturalness is in scope, also freeze `naturalness_profile`, lane refs, `naturalness_report_refs`, `voice_profile_ref`, `calibration_set_ref` and `style_exemptions`. Do not place screenplay text, prompt text, provider payloads or private Ordo state in the packet.
 3. Compile the packet through the Auctra owner projection:
 
    ```bash
@@ -38,7 +38,9 @@ Auctra owns accepted text, Story World refs, source revisions and review decisio
 
 ## Fail-closed rules
 
-- Missing context/profile/rubric/hard gate/owner grant/idempotency → `needs_contract`.
+- Missing context/assessment contract/profile/rubric/hard gate/owner grant/idempotency → `needs_contract`.
+- Assessment contract not `ready_for_scoring`, or `score_eligibility` is not `eligible` → `assessment_not_ready`; return to `ai-drama-assessment` instead of asking Ordo to invent a rubric.
+- Naturalness lane evidence or calibration digest missing → `naturalness_not_comparable`; preserve the finding refs and do not let Ordo infer an AI-source score.
 - Source revision or digest mismatch → stale/conflict; never score it as current.
 - Profile/scope mismatch → reject; never silently coerce.
 - Unknown, inconclusive, blocked or conflicting result → preserve refs and require human review.

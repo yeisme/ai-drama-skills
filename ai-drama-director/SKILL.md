@@ -15,8 +15,10 @@ description: Use when converting story emotion and character action into blockin
 2. 设计 blocking：人物位置、视线、行动路线、阻碍、前中后景和空间权力。
 3. 选择景别、角度、镜头运动、剪辑点和声音进入点，并写明叙事理由。
 4. 为演员/虚拟角色提供行动指令、潜台词、节奏和状态变化。
-5. 为每个镜头冻结 `ShotAudioIntent`：逐 cue 标注 ambience、Foley、dialogue、music、motif、silence 的时间窗、空间方向、同步点、lip-sync、provider audio policy、Sonora final mix owner 和验收条件。完整字段读取 `../ai-drama-router/references/shot-audio-intent-contract.md`。已验证可控原生对白的 Seedance 2.0 线路走 `video_native`：把逐句台词、说话人、音色描述与情绪写进视频生成 prompt 的声音设计段落，画面中出现说话人时 `lip_sync=true`；只有能力未验证或 review 失败的镜头才改成 Sonora 后期配音主线。
-6. 输出 `DirectorDecisionGraph`、`ShotIntent`、`ShotAudioIntent` 或 repair proposal，交给视觉/声音/剪辑 owner。
+5. 为每个镜头冻结 `ShotAudioIntent`：逐 cue 标注 ambience、Foley、dialogue、music、motif、silence 的时间窗、空间方向、同步点、lip-sync、provider audio policy、Sonora final mix owner 和验收条件。完整字段读取 `../ai-drama-router/references/shot-audio-intent-contract.md`。
+6. 使用 H3、Wan、Seedance、Kling V3 / Omni 或混合参考视频时，读取 `../ai-drama-router/references/video-model-capability-index.md` 和命中的独立档案，冻结 provider-neutral task intent、引用用途/ordinal、ratio/duration policy、workflow profile 和 capability maturity。不要把 provider wire mode 写进导演 canonical artifact；adapter 从中立 policy 推导。
+7. 原生对白默认采用 `replace_after_generation`。只有 capability 达到已验证线路、逐句台词/说话人/声线/情绪可控，并且 rights、lip-sync、可编辑性与人工声音验收都有证据时，才把该镜 policy 提升为 `video_native`；视觉通过不能替代声音通过。
+8. 输出 `DirectorDecisionGraph`、`ShotIntent`、`ShotAudioIntent` 或 repair proposal，交给视觉/声音/剪辑 owner。
 
 ## 质量门槛
 

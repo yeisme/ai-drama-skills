@@ -26,7 +26,7 @@ description: Use when an AI drama story, episode, scene, director, visual, conti
 1. 根据 `phase`、`artifact` 和 `target_skill` 选择一个 `context_pack_profile`，不得默认导出全项目百科。
 2. 按权威顺序收集事实：current canonical owner facts → accepted project facts → adjudicated evidence → permission-safe retrieved evidence → planned/candidate material。
 3. 跨项目检索需要由 Inferrum 现有权限感知 `ContextPack` 合同提供；不要让 Router、Skill 或 Scaena 私自遍历其他 Owner 的文件、数据库或全文。
-4. 只保留会影响本轮人物行动、知识边界、冲突、镜头、主体版本、连续性、时长、成本、权利或验收的内容。
+4. 只保留会影响本轮人物行动、知识边界、冲突、镜头、主体版本、连续性、时长、成本、权利或验收的内容。视频生成阶段还保留 task policy/capability maturity、引用角色/计数、output/audio policy 的 refs/digests；Seedance 2.5 事实按需读取 `../ai-drama-router/references/seedance-2-5-capability-profile.md`，不复制整份 provider 手册。
 5. 为关键信息标记 source ref、revision/version、digest、maturity、freshness 和 confidence；candidate/planned 不得升级为 confirmed。
 6. 任一 required source 为 `stale`、`revoked`、`permission_denied`、`contract_mismatch` 或 unknown 时停止晋级，返回缺口与安全降级动作。
 7. 生成最小 handoff，并明确哪些信息被忽略、为什么忽略、何时需要重建上下文包。

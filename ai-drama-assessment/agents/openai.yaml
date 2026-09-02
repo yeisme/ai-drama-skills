@@ -1,0 +1,3 @@
+display_name: AI 做剧题材化评估
+short_description: 先冻结题材、受众与评价目标，再决定是否允许评分。
+default_prompt: 请使用 $ai-drama-assessment 先建立 AssessmentContract，再按对白、叙述/动作、结构模板三条分轨评估自然度与 AI 模式风险；不要输出作者来源概率或未经合同批准的综合分。

@@ -42,18 +42,20 @@ capability_ref/digest
 
 能力未知不等于不生成声音。若 route 曾观察到原生音频但不能可靠关闭或控制，按 `native_audio=supported`、控制能力 `unknown/unsupported` 处理，并默认选择 `replace_after_generation`。
 
-## 原生对白主线（已验证原生音频线路）
+## 原生对白主线（证据达到门槛后）
 
-对白的第一生产路径可以是视频模型的原生音频能力，而不是默认后期 TTS。对已验证支持可控原生对白的线路，Director 把逐句台词、说话人、音色描述与情绪写进受控的声音设计输入，policy 取 `video_native`，该镜不需要 audio owner 预生产配音。原生对白镜仍需逐句通过 review：台词文本一致、角色音色跨镜一致、口型与可懂度、rights/版权；任一句失败只回退该句到 audio owner 补配，不推翻整镜。
+对白的第一生产路径可以是视频模型的原生音频能力，但不是默认值。默认先采用 `replace_after_generation`；只有线路已形成 provider canary/生产级控制证据，并能逐句约束台词、说话人、音色描述与情绪时，Director 才可把 policy 提升为 `video_native`。原生对白镜仍需逐句通过 review：台词文本一致、角色音色跨镜一致、口型与可懂度、rights/版权；任一句失败回退该句到 audio owner 补配，整镜证据不足时整镜回退。
 
-audio owner 在原生对白主线下的默认职责收窄为：配乐、SFX/ambience、最终混音、原生音轨登记与审听证据、失败句补配。`replace_after_generation` 保留为两类回退：能力未验证/不可控的 route，以及 `video_native` review 失败的镜头。
+audio owner 在已验证原生对白主线下的职责收窄为：配乐、SFX/ambience、最终混音、原生音轨登记与审听证据、失败句补配。`replace_after_generation` 是未知、fixture-only、provider-smoke、不可控或 review 未通过 route 的默认生产策略。
 
 ## Policy 语义
 
 - `none`：明确要求视频没有生产音频；缺字段不能推断为 none。
 - `external_assets`：生成前已绑定 audio owner 的音频 refs，provider 只消费允许的引用。
-- `video_native`：计划保留视频模型原生音频；必须单独通过同步、对白、角色声音、版权、可编辑性和人工审听门禁。已验证原生对白线路的对话镜可走本 policy，台词进入受控的声音设计输入。
-- `replace_after_generation`：原生音频只作样片/动作同步参考，最终由 audio owner 的资产和 mixdown 替换。原生音轨仍需登记 parent video ref 和 review 状态，不能静默进入 export。仅用于能力未验证/不可控 route 或 `video_native` review 失败的镜头。
+- `video_native`：计划保留视频模型原生音频；必须单独通过同步、对白、角色声音、版权、可编辑性和人工审听门禁。只有已验证原生对白线路的对话镜可走本 policy，台词进入受控的声音设计输入。
+- `replace_after_generation`：默认策略。原生音频只作样片/动作同步参考，最终由 audio owner 的资产和 mixdown 替换。原生音轨仍需登记 parent video ref 和 review 状态，不能静默进入 export。
+
+能力成熟度使用 `contract_declared | local_fixture_verified | provider_canary_verified | production_ready`。前两级以及只有 operator/provider-smoke 证据的第三级不能单独把 policy 提升为 `video_native`；还需逐镜的权利、声音控制和人工审听证据。Seedance 2.5 的能力快照见 `seedance-2-5-capability-profile.md`。
 
 当 rights、sync confidence、voice permission、editability 或 review 任一未知时，`video_native` 必须逐句降为 audio owner 补配或整镜降为 `replace_after_generation`，或返回 blocker。
 

@@ -18,8 +18,15 @@ originality_mode
 originality_decision_ref
 phase
 artifact
-task_role
-context_pack_profile?
+  task_role
+  context_pack_profile?
+  assessment_contract_ref?
+  assessment_state?       # missing | drafted | ready_for_assessment | ready_for_scoring | needs_human_review
+  score_eligibility?      # eligible | ineligible | partial
+  naturalness_profile?
+  naturalness_lanes[]?    # dialogue_liveability | narrative_naturalness | structural_formula_risk
+  naturalness_report_refs[]?
+  naturalness_score_policy?
 output_format?
 artifact_disposition
 persistence_policy
@@ -48,7 +55,31 @@ status
 
 多阶段任务增加 `stage_plans[]`，每个元素包含 `stage_kind`、一个 `primary_skill`、最多一个 `compatible_skill`、输入/输出合同、Owner 和 gate。
 
+generation stage 可选增加：
+
+```text
+video_model_guidance?:
+  binding_mode: non_binding
+  required_capabilities[]
+  eligible_model_families[]
+  suggested_model_family?
+  suggestion_basis[]
+  workflow_profile_ref
+  workflow_profile_digest
+```
+
+`video_model_guidance` 只表达 family-level guidance。合法 exact lock 优先且不被 Skill 覆盖；
+多个家族满足时省略 suggestion，让生产 policy owner 决策。不得携带 channel、价格、credential、
+provider payload 或伪造 exact ID。`smart_auto` 可作为意图；宿主 bridge 未声明支持时必须携带
+`smart_auto_bridge_unsupported` blocker。
+
 视频 route 可能生成原生音频时，相关 stage 还必须携带 refs-only `shot_audio_intent_ref/digest`、`provider_audio_policy`、`video_audio_capability_ref/digest`、`final_mix_owner_ref` 和独立 `audio_review_gate`；完整合同见 `shot-audio-intent-contract.md`。
+
+视频模型 route 还应携带 provider-neutral `task_policy_ref/digest`、
+`reference_roles`、`reference_counts`、`ratio_policy`、`duration_policy`、`output_formats` 和
+`capability_maturity`。Ark 的 `omni_reference_task_type` 和 Wan 的 provider wire fields 只在
+adapter 层由这些事实推导，不得成为 `DramaRoutePlan` 的 provider-specific 必填字段。多模型
+索引见 `video-model-capability-index.md`。
 
 任何 Story、Screenplay、Director、Visual、Audio、Generation、Assembly 或 Delivery stage 都必须引用 refs-only `originality_decision_ref`。`originality_mode` 的取值、权利和相似性门禁见 `originality-and-reference-policy.md`。
 
@@ -114,6 +145,13 @@ status
 11. 被删除、未选、拒绝或只存在于聊天记忆的文本不得恢复为 accepted source。
 12. `pure_original` 不得依赖改名、换脸、换色、同义改写或替换时代背景来规避相似性；出现受保护表达风险、身份泄漏或未知权利时必须阻断生产和 export。
 13. `OriginalityDecision` 只保存 refs、判断和差异化约束；不得嵌入受保护作品全文、raw prompt、provider payload 或完整内部推理。
+14. `video_model_guidance.binding_mode` 固定为 `non_binding`；社区信号不能改变 eligible/suggested family、capability maturity 或 production readiness。
+15. 评估请求先建立 `AssessmentContract`。缺少 genre、audience、audience promise 或 evaluation intent 时，顶层必须是 `needs_assessment_contract` 或 `score_not_applicable`，不得合成综合分；format 未由用户声明时保持 `unspecified`，不阻断文本层 assessment。
+16. 只有同一 `AssessmentContract`、CandidateSet、RubricProfile 和 evidence policy 内的候选才可比较；跨题材、跨目标、跨媒介的分数不可排序。
+17. “AI味”必须拆成 `naturalness_score` 与 `pattern_risk`，并按 `dialogue_liveability`、`narrative_naturalness`、`structural_formula_risk` 三条 lane 记录；不得输出作者来源概率。
+18. 媒介/平台标签只有在用户明示后才能写入 `format_profile`；未明示时保持 `unspecified`，格式与生产维度不得被推断。
+19. 自然度 lane 缺少 Auctra 确定性证据、Agent 上下文诊断或人工校准时，只能返回 `unknown`/低置信度 advisory，不得用 0 分替代。
+20. 项目声音豁免必须保留 finding，并通过带 span/hash 的 `exemption_ref` 从风险聚合中排除；不得静默删除或放宽交付残留 blocker。
 
 ## Host projection
 

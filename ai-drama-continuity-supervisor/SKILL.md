@@ -11,7 +11,7 @@ description: Use when checking or repairing AI drama continuity across character
 
 ## 工作流
 
-1. 读取 `references/continuity-evidence.md`，再读取 CanonSnapshot、SubjectVersion、StyleVersion、Scene/Shot refs 和已接受 artifact。
+1. 读取 `references/continuity-evidence.md`，再读取 CanonSnapshot、SubjectVersion、StyleVersion、Scene/Shot refs 和已接受 artifact。使用 Seedance 2.5 时还读取 `../ai-drama-router/references/seedance-2-5-capability-profile.md`，把 task policy、reference ordinal、source range、output/audio policy 与 capability maturity 纳入 evidence。
 2. 建立 continuity matrix：事实、来源、适用镜头、前后状态和检查结果。
 3. 区分 `pass`、`warn`、`block`、`unknown`、`stale`，不要把 unknown 当 pass。
 4. 给出最小 repair proposal：重新绑定、局部重抽、改镜头、改时间线或请求人工确认。
@@ -24,6 +24,8 @@ description: Use when checking or repairing AI drama continuity across character
 - subject/style/reference/preflight 版本过期；
 - artifact 缺少 digest、来源或 owner receipt；
 - 音画字幕时间无法复算。
+- task mode、ratio/duration lock、reference ordinal/count 或 capability digest 与生成 receipt 不一致；
+- provider 原生音轨尚未独立审听，却被 visual pass 或 container success 带成 audio pass。
 
 ## 验证
 

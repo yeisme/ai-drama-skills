@@ -24,7 +24,7 @@ description: Use when designing or revising an AI drama premise, theme, conflict
 2. 建立 `desire → obstacle → choice → cost → change` 冲突链。
 3. 设计 episode/scene beats：每个 beat 标注目标、阻碍、转折、信息和情绪变化。
 4. 检查因果、升级、人物主动性、结尾钩子和可视觉化程度。
-5. 输出 `StoryProposal`，交给 Auctra/Dramaturge 评审；不要直接覆盖 canonical screenplay。
+5. 输出 `StoryProposal`，交给 Auctra/approved Agent runtime 评审；不要直接覆盖 canonical screenplay。
 
 ## 质量门槛
 

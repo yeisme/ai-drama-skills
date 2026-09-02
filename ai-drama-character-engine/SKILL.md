@@ -21,7 +21,7 @@ description: Use when designing, simulating, stress-testing, or revising AI dram
 2. 区分角色知道的事实、错误信念和观众知道的事实。
 3. 对当前冲突模拟至少 2–3 个行动选择，标注收益、代价、关系变化和下一状态。
 4. 检查行动是否符合性格，是否过早泄露秘密，是否制造新的戏剧压力。
-5. 输出 `CharacterDecisionProposal` 或 `CharacterStateDelta`，等待 Auctra/Dramaturge owner 接受。
+5. 输出 `CharacterDecisionProposal` 或 `CharacterStateDelta`，等待 Auctra/approved Agent runtime owner 接受。
 
 ## 质量门槛
 
@@ -33,7 +33,7 @@ description: Use when designing, simulating, stress-testing, or revising AI dram
 
 ## 边界与验证
 
-不保存私有记忆、不替代 canonical screenplay、不把角色模拟当作真实心理诊断。先验证本仓库 Skill；涉及 Auctra/Dramaturge 集成时，再进入对应 Owner 仓库运行其公开的角色、连续性和回归测试：
+不保存私有记忆、不替代 canonical screenplay、不把角色模拟当作真实心理诊断。先验证本仓库 Skill；涉及 Auctra/approved Agent runtime 集成时，再进入对应 Owner 仓库运行其公开的角色、连续性和回归测试：
 
 ```bash
 python3 scripts/validate_skills.py

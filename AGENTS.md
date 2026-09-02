@@ -18,6 +18,7 @@
 - Agent 负责语义路由；宿主通过 capability adapter 实现确定性发现、预览、启用、回滚和验证。Yeisme 的 adapter 才可调用 `scripts/skills.sh`，不要把自然语言理解写进脚本。
 - Skill 输出 proposal、评估和 handoff，不直接修改其他 Owner 的 canonical state。
 - 多评委必须盲评、绑定 CandidateSet/rubric/profile 版本，并记录模型相关性簇。
+- 已有剧本的评估必须先由 `ai-drama-assessment` 冻结 AssessmentContract；缺少题材、受众、承诺或评价目标时只能做定性报告，不得给综合分。用户未明示媒介时保持 `format_profile=unspecified`，不得主动贴平台标签。用户所说的“AI味”必须拆成对白、叙述/动作和结构模板三条自然度/模式风险 lane，不计算作者来源概率。`ai-drama-critic-panel` 只处理合同冻结后的候选比较。
 - 高分不能覆盖 rights、identity、continuity、permission、cost 或 preflight blocker。
 - 不记录 raw prompt、provider payload、私有工具参数、凭据或完整 chain-of-thought。
 - 参考具体导演时使用高层创作原则，不复制具体作品的台词、场景或镜头序列。
