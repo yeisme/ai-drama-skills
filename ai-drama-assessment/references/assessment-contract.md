@@ -161,6 +161,28 @@ hard_gate_state
 
 只有 `score_eligibility=eligible` 且 hard gates 通过时，才可按同一 rubric 聚合 0–4 分。聚合使用适用维度的中位数/截尾平均，并报告 IQR、分歧和置信度；不得把未适用维度填成 0，也不得把缺证据填成低分。
 
+### score_eligibility canonical enum 与 legacy 别名转换表
+
+canonical（唯一允许写出的值）：
+
+```text
+eligible                  # 合同 ready_for_scoring 且候选/rubric/hard gate/证据策略齐备
+provisional_only          # 无 calibration 时仅产出低置信临时分，限定同稿比较
+needs_human_review        # 缺人工门（contract accept / calibration freeze）或证据不足
+assessment_not_comparable # comparison class 不一致或题材承诺不可比
+stale                     # source revision、digest、rubric、calibration 或 evidence policy 已漂移
+```
+
+legacy 读取别名（只用于消费旧记录，不得再写出）：
+
+| legacy 值 | canonical 映射 | 规则 |
+| --- | --- | --- |
+| `eligible` | `eligible` | 一一对应 |
+| `partial` | `provisional_only` | 语义同为"临时分/受限解释" |
+| `ineligible` | `needs_human_review`（缺理由时） | 携带 reason 时按 reason 精确映射到 `needs_human_review`/`assessment_not_comparable`/`stale` |
+
+未知值必须 fail closed：报错并拒绝聚合，不得默认放行或降级为 advisory。
+
 ## 10. 报告模板
 
 ```text

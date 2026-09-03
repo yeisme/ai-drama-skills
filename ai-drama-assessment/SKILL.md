@@ -35,7 +35,7 @@ description: Use when evaluating, scoring, or comparing an existing drama or scr
 - `anti_goals`（本题材不应被惩罚的特征）；
 - `comparison_class`、`rubric_profile`、`hard_gate_profile`；
 - `evidence_policy`、`unknowns`、`rights_state`、`canonical_owner`；
-- `score_eligibility`：`eligible`、`ineligible` 或 `partial`。
+- `score_eligibility`（canonical 五值）：`eligible`、`provisional_only`、`needs_human_review`、`assessment_not_comparable`、`stale`；legacy `eligible|ineligible|partial` 只作读取别名（见 references/assessment-contract.md 转换表），未知值 fail closed。
 - 自然度评估还必须声明 `naturalness_profile`、`naturalness_lanes`、`voice_profile_ref`、`calibration_set_ref`、`style_exemptions` 和 `naturalness_score_policy`。
 
 合同未被人类或 owner 接受前，评分只能作为草拟建议，不能写成最终评估结论。

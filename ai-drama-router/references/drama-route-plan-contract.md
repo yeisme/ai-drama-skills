@@ -22,7 +22,7 @@ artifact
   context_pack_profile?
   assessment_contract_ref?
   assessment_state?       # missing | drafted | ready_for_assessment | ready_for_scoring | needs_human_review
-  score_eligibility?      # eligible | ineligible | partial
+  score_eligibility?      # eligible | provisional_only | needs_human_review | assessment_not_comparable | stale
   naturalness_profile?
   naturalness_lanes[]?    # dialogue_liveability | narrative_naturalness | structural_formula_risk
   naturalness_report_refs[]?

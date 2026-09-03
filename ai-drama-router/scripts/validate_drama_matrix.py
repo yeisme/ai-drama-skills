@@ -119,6 +119,29 @@ def main() -> None:
         if failure_code not in skill_text:
             fail(f"router assessment failure state is missing: {failure_code}")
 
+    assessment_contract_text = (
+        router_dir.parent / "ai-drama-assessment" / "references" / "assessment-contract.md"
+    ).read_text(encoding="utf-8")
+    for eligibility in (
+        "eligible",
+        "provisional_only",
+        "needs_human_review",
+        "assessment_not_comparable",
+        "stale",
+    ):
+        if eligibility not in contract_text:
+            fail(f"route plan contract is missing canonical score_eligibility value: {eligibility}")
+        if eligibility not in assessment_contract_text:
+            fail(f"assessment contract is missing canonical score_eligibility value: {eligibility}")
+    for alias_rule in (
+        "`partial` | `provisional_only`",
+        "`ineligible` | `needs_human_review`",
+    ):
+        if alias_rule not in assessment_contract_text:
+            fail(f"assessment contract is missing legacy alias mapping row: {alias_rule}")
+    if "# eligible | ineligible | partial" in contract_text:
+        fail("route plan contract still documents legacy-only score_eligibility enum")
+
     model_index_text = (references_dir / "video-model-capability-index.md").read_text(
         encoding="utf-8"
     )
