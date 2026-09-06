@@ -17,17 +17,17 @@ Story 到 Delivery 的每个 stage 都引用同一 decision lineage。出现 `re
 
 | `phase` | 当前 artifact / 用户工作 | Primary Skill | 可选 constraint | `context_pack_profile` | Canonical owner |
 | --- | --- | --- | --- | --- | --- |
-| `intake` | 媒介、剧型、时长、集数、受众、类型承诺 | `ai-drama-format-strategist` | `ai-drama-producer` | `series-development` 或无 | `story_canon_owner` proposal |
-| `define` | premise、主题、核心冲突、故事引擎 | `ai-drama-story-architecture` | `ai-drama-character-engine` | `series-development` | `story_canon_owner` |
-| `character` | 欲望、恐惧、秘密、关系、知识边界 | `ai-drama-character-engine` | `ai-drama-continuity-supervisor` | `series-development` 或 `episode-planning` | `story_canon_owner` |
-| `series_plan` | series bible、季度、pilot、分集、单元结构 | `ai-drama-showrunner` | `ai-drama-story-architecture` | `series-development` / `episode-planning` | `story_canon_owner` |
-| `episode_plan` | 本集功能、beat、开场与集尾钩子 | `ai-drama-story-architecture` | `ai-drama-showrunner` | `episode-planning` | `story_canon_owner` |
-| `scene_draft` | 场景动作、对白、潜台词和转场 | `screenplay-scene-writer` | `creative-style-lens-builder` | `scene-drafting` | `story_canon_owner` |
+| `intake` | 媒介、剧型、时长、集数、受众、类型承诺 | `template:writing/ai-drama-format-strategy` | `ai-drama-producer` | `series-development` 或无 | `story_canon_owner` proposal |
+| `define` | premise、主题、核心冲突、故事引擎 | `template:writing/ai-drama-story-architecture` | `template:writing/ai-drama-character-engine` | `series-development` | `story_canon_owner` |
+| `character` | 欲望、恐惧、秘密、关系、知识边界 | `template:writing/ai-drama-character-engine` | `ai-drama-continuity-supervisor` | `series-development` 或 `episode-planning` | `story_canon_owner` |
+| `series_plan` | series bible、季度、pilot、分集、单元结构 | `template:writing/ai-drama-showrunner` | `template:writing/ai-drama-story-architecture` | `series-development` / `episode-planning` | `story_canon_owner` |
+| `episode_plan` | 本集功能、beat、开场与集尾钩子 | `template:writing/ai-drama-showrunner` | `template:writing/ai-drama-story-architecture` | `episode-planning` | `story_canon_owner` |
+| `scene_draft` | 场景动作、对白、潜台词和转场 | `template:writing/ai-drama-scene-writing` | `creative-style-lens-builder` | `scene-drafting` | `story_canon_owner` |
 | `director_plan` | 表演、调度、空间、镜头和逐镜 `ShotAudioIntent` | `ai-drama-director` | `ai-drama-visual-language` | `director-planning` | story proposal / `production_owner` intent；音频资产仍归 `audio_owner` |
 | `visual_plan` | 主体、风格、关键帧、分镜、候选 brief | `ai-drama-visual-language` | `ai-drama-continuity-supervisor` | `visual-production` | `visual_asset_owner` proposal |
 | `reference_video` | 参考视频动作、相机、构图、姿态约束 | `ai-drama-video-reference-director` | `ai-drama-continuity-supervisor` | `visual-production` | `production_owner` proposal |
-| `assessment` | 评估目标、格式/题材/受众合同、成功标准、定性评估、自然度/AI模式风险三分轨 | `ai-drama-assessment` | `ai-drama-format-strategist` | `review-repair` 或 `series-development` | `story_canon_owner` proposal / `evaluation_owner` evidence |
-| `evaluation` | 已冻结合同下的候选盲评、分歧、裁决、修复队列 | `ai-drama-critic-panel` | `ai-drama-producer` | `review-repair` | `evaluation_owner` evidence / artifact owner review |
+| `assessment` | 评估目标、格式/题材/受众合同、成功标准、定性评估、自然度/AI模式风险三分轨 | `ai-drama-assessment` | `template:writing/ai-drama-format-strategy` | `review-repair` 或 `series-development` | `story_canon_owner` proposal / `evaluation_owner` evidence |
+| `evaluation` | 已冻结合同下的候选盲评、分歧、裁决、修复队列 | `template:writing/ai-drama-critic-review` | `ai-drama-producer` | `review-repair` | `evaluation_owner` evidence / artifact owner review |
 | `generation` | 成本、权限、视频/原生音频能力、audio policy、批次和 retry admission | `ai-drama-producer` | `ai-drama-continuity-supervisor` | `visual-production` | `production_owner` |
 | `assembly` | 剪辑、原生音轨审听/替换、声音、字幕、节奏和时间线 | `ai-drama-edit-and-sound` | `ai-drama-continuity-supervisor` | `assembly-delivery` | `production_owner` / `audio_owner` refs |
 | `delivery_review` | 连续性、rights、cost、readiness 和交付 | `ai-drama-continuity-supervisor` | `ai-drama-producer` | `assembly-delivery` | `production_owner` |
@@ -62,12 +62,12 @@ generation stage 可输出非绑定 `video_model_guidance`。用户合法 exact 
 - `feature-film`：集中主选择、有限支线、高潮和结尾回收。
 - `audio-drama`：声音线索、角色声线、空间声场和可听动作优先。
 
-详细结构由 `ai-drama-format-strategist/references/format-profiles.md` 提供，Router 只引用结果。
+详细结构合同由官方模板 `writing/ai-drama-format-strategy` 的输入/输出投影承载，Router 只引用结果。
 
 ## 冲突规则
 
-- format 未定且会改变结构时，`ai-drama-format-strategist` 优先于 Story/Writer。
-- 评估请求若没有 `AssessmentContract`，`ai-drama-assessment` 优先于 `ai-drama-critic-panel`；不得直接输出综合分。
+- format 未定且会改变结构时，`writing/ai-drama-format-strategy` 模板优先于 Story/Writer。
+- 评估请求若没有 `AssessmentContract`，`ai-drama-assessment` 优先于 `writing/ai-drama-critic-review` 模板；不得直接输出综合分。
 - 用户提到“AI味”时，`ai-drama-assessment` 必须把它拆为 `dialogue_liveability`、`narrative_naturalness`、`structural_formula_risk`；不得路由到作者来源检测器。
 - 题材不要求的特征必须进入 `anti_goals`；不得用另一题材的失败、成长或道德标准替换当前合同。
 - `unknown`、`not_applicable` 与 `defect` 分离；证据缺失只能降低 coverage 或触发 `score_not_applicable`，不能填成 0 分。

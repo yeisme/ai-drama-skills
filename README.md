@@ -7,12 +7,23 @@
 ## 能力分组
 
 - 项目启动：`manga-drama-project-starter`（默认英文、显式中文、Auctra + Scaena lazy workspace）
-- 路由与策略：`ai-drama-router`、`ai-drama-format-strategist`、`ai-drama-context-pack-builder`
-- 故事与人物：`ai-drama-story-architecture`、`ai-drama-character-engine`、`ai-drama-showrunner`
-- 场景与导演：`screenplay-scene-writer`、`ai-drama-director`、`ai-drama-video-reference-director`
+- 路由与策略：`ai-drama-router`、`ai-drama-context-pack-builder`（形态策略已收编为 `writing/ai-drama-format-strategy` 模板）
+- 故事与人物：已收编为官方模板 `writing/ai-drama-story-architecture`、`writing/ai-drama-character-engine`、`writing/ai-drama-showrunner`（经 Template Registry 确定性编译，无需安装 Skill）
+- 场景与导演：`ai-drama-director`、`ai-drama-video-reference-director`（场景写作已收编为 `writing/ai-drama-scene-writing` 模板）
 - 视觉与声音：`ai-drama-visual-language`、`ai-drama-edit-and-sound`
-- 评审与生产：`ai-drama-assessment`、`ai-drama-critic-panel`、`ai-drama-continuity-supervisor`、`ai-drama-producer`、`ai-drama-production-orchestrator`
+- 评审与生产：`ai-drama-assessment`（合同门禁）、`ai-drama-continuity-supervisor`、`ai-drama-producer`、`ai-drama-production-orchestrator`（多候选比较已收编为 `writing/ai-drama-critic-review` 模板）
 - Owner 交接：`auctra-ai-drama-panel-handoff`
+
+## 已收编为官方模板的任务角色
+
+以下任务角色不再以 Skill 形态维护，改为官方 Prompt 模板（`promptrepo://official/writing/<id>@1.0.0?locale=en`，由 data/yeisme-prompt-templates 拥有，消费方经 `template-registry prompt` 或 owner 领域命令编译）：
+
+- `ai-drama-format-strategist` → `writing/ai-drama-format-strategy`
+- `ai-drama-story-architecture` → `writing/ai-drama-story-architecture`
+- `ai-drama-character-engine` → `writing/ai-drama-character-engine`
+- `ai-drama-showrunner` → `writing/ai-drama-showrunner`
+- `ai-drama-critic-panel` → `writing/ai-drama-critic-review`
+- `screenplay-scene-writer`（路由角色面） → `writing/ai-drama-scene-writing`
 
 `ai-drama-assessment` 同时承载“AI味”请求的诚实边界：只评对白活人感、叙述/动作自然度和结构模板风险，输出带 coverage/confidence 的 0–4 行为锚点；不推断作者来源，不主动贴媒介/平台标签，也不生成未经校准的综合分。
 

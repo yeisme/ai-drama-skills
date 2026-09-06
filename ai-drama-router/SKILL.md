@@ -31,7 +31,7 @@ Router 不代写完整剧本、不成为新的创作数据库，也不为一次�
 
 1. 识别十五个轴：`medium`、`format_profile`、`genre_lens`、`phase`、`artifact`、`task_role`、`evidence_state`、`canonical_owner`、`activation_scope`、`artifact_disposition`、`persistence_policy`、`batch_policy`、`acceptance_state`、`originality_mode`、`assessment_state`。
 2. 生成或读取 `OriginalityDecision`。用户要求纯原创时固定为 `pure_original`；涉及改编、作品/创作者参考或外部素材时必须记录来源、权利依据、排除项、差异化约束和相似性 review gate。缺失时返回 `needs_originality_decision`，不得把“原创”当作无证据的标签。
-3. 剧型、单集时长、季/集形态或类型承诺不明确，且会改变结构判断时，选择 `ai-drama-format-strategist` 作为 primary；不要让 Writer 猜承载形态。
+3. 剧型、单集时长、季/集形态或类型承诺不明确，且会改变结构判断时，把 `writing/ai-drama-format-strategy` 模板作为 primary；不要让 Writer 猜承载形态。
 4. 用户要求“评估/打分/看看好不好”或提到“AI味”但没有冻结 `AssessmentContract` 时，先选择 `ai-drama-assessment`；只输出题材化定性评估、自然度/机器模式风险分轨和缺失字段，不给未经合同批准的综合数字分。不要把通用 P0 生产门禁当作题材质量评分，也不要推断作者来源或平台标签。
 5. 读取已有 CanonSnapshot、revision/digest、当前 artifact、最近 blocker 和权限/成本状态。跨项目知识只消费宿主声明的 Owner refs 或权限感知 ContextPack，不直接遍历私有状态。
 6. 根据阶段选择一个 `context_pack_profile`。除纯 intake 外，需要 owner/project 历史的工作先调用 `ai-drama-context-pack-builder` 准备最小上下文。
@@ -41,7 +41,7 @@ Router 不代写完整剧本、不成为新的创作数据库，也不为一次�
 10. 新写或大幅重写超过 5 集时，将 `batch_policy` 设为 `proof_slice`：先选 3 个能检验人物声音、冲突策略和后果的代表集，每集只写一个核心场景并产生 A/B 策略候选。用户未确认主要人物声音前，不生成剩余全集。
 11. 选择一个 primary Skill。只有连续性、风格、生产约束或明确输入依赖需要时，增加一个 compatible constraint Skill。
 12. generation stage 需要视频模型能力时，生成 `binding_mode=non_binding` 的 `video_model_guidance`：先按硬约束过滤，合法 exact lock 优先；仅在硬能力或用户偏好产生唯一匹配时给出一个 suggested family。多个家族满足时只给 eligible families，交给生产 policy owner；不得按社区热度破平局。
-13. 按 `active → resolved_local_on_demand → needs_profile_promotion → needs_install_decision` 顺序解析 Skill。一次性任务默认停在 local on-demand，不执行持久化 activation。
+13. 模板承载的 primary 先解析为 `template_ref_available`（官方 exact ref 已就绪，无需安装决策）。其余 Skill 按 `active → resolved_local_on_demand → needs_profile_promotion → needs_install_decision` 顺序解析。一次性任务默认停在 local on-demand，不执行持久化 activation。
 14. 若项目高频需要该 Skill，生成宿主无关的 `SkillActivationPlan`。宿主声明了启用适配器时可交给该适配器；未声明时只返回 proposal。没有当前用户的明确启用/安装授权时不得执行持久化变更。
 15. 独立决定输出格式、artifact disposition、persistence 和 acceptance。“写成 Markdown”只设置输出格式；未评审 preview/candidate 默认 `unreviewed`，只能留在聊天、操作系统临时目录或宿主 review workspace，不得写最终项目路径。
 16. 生成 Owner handoff、gates 和下一动作。在 provider call、canonical 修改、主体冻结、持久化 activation、production acceptance、export 或 publish 前停在对应 gate。**分镜/导演方向门禁**：任何付费资产生成（出图、视频、配音）之前，必须把分镜方向——故事脊柱、逐镜节拍、对白主干、视觉基调、时长合同——以用户能直接判断的形式显式呈现并获得当前用户确认；未确认不得进入生成阶段。
@@ -61,19 +61,21 @@ quick 产物进项目必须显式 capture 走 pending review。
 | 用户意图 | Primary Skill | 可选约束 |
 | --- | --- | --- |
 | 创建、初始化、本地化或迁移漫剧/短剧/剧本生产项目 | `manga-drama-project-starter` | `ai-drama-producer` |
-| 选择短剧/漫剧/美剧/电影/音频剧形态、时长、集数和类型契约 | `ai-drama-format-strategist` | `ai-drama-producer` |
-| 一句话想法、主题、冲突、beat、结尾钩子 | `ai-drama-story-architecture` | `ai-drama-character-engine` |
-| 角色动机、秘密、关系、知识边界和行动模拟 | `ai-drama-character-engine` | `ai-drama-continuity-supervisor` |
-| 季度、多集、pilot、单元案、A/B/C 线和长期回报 | `ai-drama-showrunner` | `ai-drama-story-architecture` |
-| 可拍场景、动作、对白、潜台词和转场 | `screenplay-scene-writer` | `creative-style-lens-builder` |
+| 选择短剧/漫剧/美剧/电影/音频剧形态、时长、集数和类型契约 | `template:writing/ai-drama-format-strategy` | `ai-drama-producer` |
+| 一句话想法、主题、冲突、beat、结尾钩子 | `template:writing/ai-drama-story-architecture` | `template:writing/ai-drama-character-engine` |
+| 角色动机、秘密、关系、知识边界和行动模拟 | `template:writing/ai-drama-character-engine` | `ai-drama-continuity-supervisor` |
+| 季度、多集、pilot、单元案、A/B/C 线和长期回报 | `template:writing/ai-drama-showrunner` | `template:writing/ai-drama-story-architecture` |
+| 可拍场景、动作、对白、潜台词和转场 | `template:writing/ai-drama-scene-writing` | `creative-style-lens-builder` |
 | 把情绪变成表演、调度、空间、镜头和声音意图 | `ai-drama-director` | `ai-drama-visual-language` |
 | Blender/动作/相机参考视频、Seedance `reference_video` 入参 | `ai-drama-video-reference-director` | `ai-drama-continuity-supervisor` |
 | 主体、风格、关键帧、分镜和视觉候选 | `ai-drama-visual-language` | `ai-drama-continuity-supervisor` |
 | 节奏、剪辑、声音、字幕和 assembly | `ai-drama-edit-and-sound` | `ai-drama-continuity-supervisor` |
-| 评估目标、题材镜头、评分资格与定性报告 | `ai-drama-assessment` | `ai-drama-format-strategist` |
-| 多候选评分、争议、选优和有限修复 | `ai-drama-critic-panel` | `ai-drama-producer` |
-| 成本、权限、预算、批次、retry 和 delivery readiness | `ai-drama-producer` | `ai-drama-critic-panel` |
+| 评估目标、题材镜头、评分资格与定性报告 | `ai-drama-assessment` | `template:writing/ai-drama-format-strategy` |
+| 多候选评分、争议、选优和有限修复 | `template:writing/ai-drama-critic-review` | `ai-drama-producer` |
+| 成本、权限、预算、批次、retry 和 delivery readiness | `ai-drama-producer` | `template:writing/ai-drama-critic-review` |
 | 跨故事、评估、视觉、声音和生产 Owner 运行与恢复 | `ai-drama-production-orchestrator` | `ai-drama-producer` |
+
+`template:` primary 表示官方模板 exact ref（如 `promptrepo://official/writing/ai-drama-format-strategy@1.0.0?locale=en`），由消费方 CLI（`template-registry prompt` 或 owner 领域命令）确定性编译，不需要安装矩阵 Skill。模板承载的意图解析为 `template_ref_available`；constraint 仍按需选择 Skill 或另一模板。
 
 ## 输出
 

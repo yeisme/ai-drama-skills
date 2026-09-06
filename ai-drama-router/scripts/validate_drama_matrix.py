@@ -29,22 +29,36 @@ ROUTER_REFERENCES = (
 
 REQUIRED_SKILL_NAMES = (
     "manga-drama-project-starter",
-    "ai-drama-format-strategist",
     "ai-drama-context-pack-builder",
-    "ai-drama-story-architecture",
-    "ai-drama-character-engine",
-    "ai-drama-showrunner",
-    "screenplay-scene-writer",
     "ai-drama-director",
     "ai-drama-video-reference-director",
     "ai-drama-visual-language",
     "ai-drama-edit-and-sound",
     "ai-drama-assessment",
     "ai-drama-continuity-supervisor",
-    "ai-drama-critic-panel",
     "ai-drama-producer",
     "ai-drama-production-orchestrator",
     "creative-style-lens-builder",
+)
+
+# Task-role capabilities consolidated into official prompt templates
+# (data/yeisme-prompt-templates change official-drama-task-role-templates-v1).
+REQUIRED_TEMPLATE_REFS = (
+    "template:writing/ai-drama-format-strategy",
+    "template:writing/ai-drama-story-architecture",
+    "template:writing/ai-drama-character-engine",
+    "template:writing/ai-drama-showrunner",
+    "template:writing/ai-drama-scene-writing",
+    "template:writing/ai-drama-critic-review",
+)
+
+RETIRED_SKILL_NAMES = (
+    "ai-drama-format-strategist",
+    "ai-drama-story-architecture",
+    "ai-drama-character-engine",
+    "ai-drama-showrunner",
+    "ai-drama-critic-panel",
+    "screenplay-scene-writer",
 )
 
 def fail(message: str) -> None:
@@ -68,6 +82,17 @@ def main() -> None:
     for skill_name in REQUIRED_SKILL_NAMES:
         if f"`{skill_name}`" not in combined_contract:
             fail(f"routing contract does not reference required skill: {skill_name}")
+
+    for template_ref in REQUIRED_TEMPLATE_REFS:
+        if f"`{template_ref}`" not in combined_contract:
+            fail(f"routing contract does not reference required template: {template_ref}")
+
+    for retired_name in RETIRED_SKILL_NAMES:
+        if f"`{retired_name}`" in combined_contract:
+            fail(f"routing contract still references retired skill: {retired_name}")
+
+    if "template_ref_available" not in skill_text:
+        fail("router must resolve template-backed primaries as template_ref_available")
 
     if "一个 primary" not in skill_text or "最多一个" not in skill_text:
         fail("router must preserve the one-primary/one-constraint invariant")

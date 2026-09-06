@@ -91,7 +91,7 @@
 | `conversational-edit-proposal` | 受影响 artifact 对应的最窄 Skill | typed proposal → canonical owner review |
 | `external-nle-draft-handoff` | `ai-drama-edit-and-sound` | accepted timeline → external editor adapter |
 | `creator-template-and-review-pack` | 当前阶段对应的最窄 Skill | ContextPack/rubric → corresponding owner |
-| `scenario-skill-catalog-research` | `ai-drama-format-strategist` | exploratory scenario proposal only |
+| `scenario-skill-catalog-research` | `template:writing/ai-drama-format-strategy` | exploratory scenario proposal only |
 
 ## `input_refs` 记录
 

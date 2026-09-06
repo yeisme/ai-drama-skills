@@ -12,8 +12,8 @@ originality_decision_ref: originality:crime-pilot:v1
 phase: series_plan
 artifact: series_bible
 context_pack_profile: series-development
-primary_skill: ai-drama-showrunner
-compatible_skill: ai-drama-story-architecture
+primary: template:writing/ai-drama-showrunner
+compatible: template:writing/ai-drama-story-architecture
 canonical_owner: story_canon_owner
 ```
 
@@ -23,7 +23,7 @@ canonical_owner: story_canon_owner
 
 请求：做 60 集竖屏复仇短剧，优化人物、对白、爽点和钩子。
 
-若集长、受众和核心类型未定：先路由 `ai-drama-format-strategist`。合同接受后：
+若集长、受众和核心类型未定：先路由 `writing/ai-drama-format-strategy` 模板。合同接受后：
 
 ```text
 format_profile: vertical-short-drama
@@ -32,8 +32,8 @@ originality_decision_ref: originality:revenge-proof-slice:v1
 phase: proof_slice
 artifact: three_episode_core_scene_candidates
 context_pack_profile: series-development
-primary_skill: ai-drama-showrunner
-compatible_skill: ai-drama-story-architecture
+primary: template:writing/ai-drama-showrunner
+compatible: template:writing/ai-drama-story-architecture
 artifact_disposition: candidate
 persistence_policy: chat_only
 batch_policy: proof_slice
@@ -71,8 +71,8 @@ originality_decision_ref: originality:firefighter-feature:v1
 phase: define
 artifact: story_architecture
 context_pack_profile: series-development
-primary_skill: ai-drama-story-architecture
-compatible_skill: ai-drama-character-engine
+primary: template:writing/ai-drama-story-architecture
+compatible: template:writing/ai-drama-character-engine
 ```
 
 ## 5. 一次性缺少 active Skill
@@ -88,7 +88,7 @@ activation_plan: absent
 
 ## 6. 高频项目启用
 
-用户明确要求为当前创作项目长期启用 `ai-drama-showrunner`：
+用户明确要求为当前创作项目长期复用 `writing/ai-drama-showrunner` 模板编译结果：
 
 ```text
 resolution_status: needs_profile_promotion

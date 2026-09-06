@@ -119,7 +119,7 @@ auctra screenplay quality-check --body-file <script.md> --profile screenplay_p0.
 auctra screenplay quality-check --body-file <script.md> --profile screenplay_p0.v2 --require-evidence --naturalness --json
 ```
 
-这些命令是 preflight，不是题材评分。`--naturalness` 当前只增加叙述/描写层 v1 投影，不包含对白和结构模板分。只有 AssessmentContract ready 后，才可进入 `ai-drama-critic-panel` 的评分链。
+这些命令是 preflight，不是题材评分。`--naturalness` 当前只增加叙述/描写层 v1 投影，不包含对白和结构模板分。只有 AssessmentContract ready 后，才可进入 `writing/ai-drama-critic-review` 模板的候选比较链。
 
 目标中的独立 screenplay naturalness 三分轨 operation 尚未注册；在 Auctra owner change 实现前，不得把它写成当前可运行命令。
 
