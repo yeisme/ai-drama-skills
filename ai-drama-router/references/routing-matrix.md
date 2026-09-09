@@ -23,7 +23,7 @@ Story 到 Delivery 的每个 stage 都引用同一 decision lineage。出现 `re
 | `series_plan` | series bible、季度、pilot、分集、单元结构 | `template:writing/ai-drama-showrunner` | `template:writing/ai-drama-story-architecture` | `series-development` / `episode-planning` | `story_canon_owner` |
 | `episode_plan` | 本集功能、beat、开场与集尾钩子 | `template:writing/ai-drama-showrunner` | `template:writing/ai-drama-story-architecture` | `episode-planning` | `story_canon_owner` |
 | `scene_draft` | 场景动作、对白、潜台词和转场 | `template:writing/ai-drama-scene-writing` | `creative-style-lens-builder` | `scene-drafting` | `story_canon_owner` |
-| `director_plan` | 表演、调度、空间、镜头和逐镜 `ShotAudioIntent` | `ai-drama-director` | `ai-drama-visual-language` | `director-planning` | story proposal / `production_owner` intent；音频资产仍归 `audio_owner` |
+| `director_plan` | 表演、调度、空间、创作分镜和逐镜 `ShotAudioIntent` | `ai-drama-director` | `ai-drama-visual-language` | `director-planning` | `story_canon_owner` planning proposal；accepted handoff 后才进入 `production_owner`，音频资产仍归 `audio_owner` |
 | `visual_plan` | 主体、风格、关键帧、分镜、候选 brief | `ai-drama-visual-language` | `ai-drama-continuity-supervisor` | `visual-production` | `visual_asset_owner` proposal |
 | `reference_video` | 参考视频动作、相机、构图、姿态约束 | `ai-drama-video-reference-director` | `ai-drama-continuity-supervisor` | `visual-production` | `production_owner` proposal |
 | `assessment` | 评估目标、格式/题材/受众合同、成功标准、定性评估、自然度/AI模式风险三分轨 | `ai-drama-assessment` | `template:writing/ai-drama-format-strategy` | `review-repair` 或 `series-development` | `story_canon_owner` proposal / `evaluation_owner` evidence |
@@ -48,6 +48,14 @@ generation stage 可输出非绑定 `video_model_guidance`。用户合法 exact 
 过滤。只有唯一匹配时才建议一个 family，多匹配时只列 eligible families，由生产 policy owner
 决定。社区 research signal 不得破平局。典型镜头门禁和回退见
 `video-model-drama-workflow-matrix.md`。
+
+### 镜头技术词汇表（Cinematique）叠加
+
+`promptrepo://official/video/cinematique-shot-techniques-beta`（150 条电影技术提示词，来源 vvsvs.pro/cinematique）不创建新的 route，只为已有 stage 提供标准镜头语言输入：
+
+- `director_plan`：逐镜选一条主技术，技术 id 与选型理由（引 spec `when_to_use`）写进分镜 camera/lighting 字段；Editing/Storytelling 类技术进入节拍与转场计划而非单镜画面。
+- `visual_plan` / `generation`：`technique_prompt_bound`（spec 提示词替换 `[Subject]` 后）作为镜头 prompt 技术段；`target` 区分 image/video 投递语义。
+- 一个镜头只绑一条主技术；绑定除 `[Subject]` 替换外逐字保留库内提示词。选型、绑定与扩展细节见 `cinematique-shot-technique-library.md`。
 
 ## 格式修饰规则
 

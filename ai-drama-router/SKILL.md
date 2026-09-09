@@ -13,6 +13,7 @@ Router 不代写完整剧本、不成为新的创作数据库，也不为一次�
 
 ## 参考资料
 
+- 所有做剧请求先读取 `references/goal-first-production.md`，从用户已有表达判断这轮要验证故事、视觉/动作、交付单集，还是建设长期资产；只有答案会改变路线且上下文缺失时才问一个最小问题。
 - 需要识别 canonical owner、revision 和 mutation boundary 时读取 `references/canon-boundary.md`。
 - 需要按阶段和 artifact 选择工作 Skill 时读取 `references/routing-matrix.md`。
 - 需要评估已有剧本、先定评价目标再评分时读取 `../ai-drama-assessment/references/assessment-contract.md`，并先选择 `ai-drama-assessment`。
@@ -25,9 +26,12 @@ Router 不代写完整剧本、不成为新的创作数据库，也不为一次�
 - 需要在短对白、动作/相机参考、首尾帧、关键帧、edit/extend、20–30 秒长镜、2K 精修、原生音频和后置替换之间选择工作流时，读取 `references/video-model-drama-workflow-matrix.md`。
 - 只有用户明确请求社区比较、趋势或研究时，才读取 `references/video-model-community-research-2026-09-01.md`；社区信号不得参与默认路由、模型平局、maturity 或 production readiness。
 - 请求涉及一键出片、产品宣传、电影级镜头卡、长视频切 Shorts、可编程渲染、对话式剪辑、外部 NLE 或视频生产模板时，读取 `references/upstream-video-production-patterns.md`，只选择固定 commit 的一个主要 pattern family。
+- `director_plan`、`visual_plan` 或 `generation` 需要为镜头选择运镜/布光/构图/剪辑/叙事/风格语言，或用户点名具体电影技法时，读取 `references/cinematique-shot-technique-library.md`，从官方 Cinematique 模板选一条技术并绑定主体；一个镜头只绑一条主技术。
 - 需要校验美剧、竖屏短剧、漫剧、电影和已有剧本请求时读取 `references/route-examples.md`。
 
 ## 路由流程
+
+先按 [目标优先制作](references/goal-first-production.md)确定本轮交付和必要证据，再执行以下路由。资产完整度服从交付目标；快速 demo 不默认要求六视图、表情库、拆层或透明通道。沿用已有明确选择与授权，不重复询问；这不取消成本、权利和正式生产接受边界。
 
 1. 识别十五个轴：`medium`、`format_profile`、`genre_lens`、`phase`、`artifact`、`task_role`、`evidence_state`、`canonical_owner`、`activation_scope`、`artifact_disposition`、`persistence_policy`、`batch_policy`、`acceptance_state`、`originality_mode`、`assessment_state`。
 2. 生成或读取 `OriginalityDecision`。用户要求纯原创时固定为 `pure_original`；涉及改编、作品/创作者参考或外部素材时必须记录来源、权利依据、排除项、差异化约束和相似性 review gate。缺失时返回 `needs_originality_decision`，不得把“原创”当作无证据的标签。

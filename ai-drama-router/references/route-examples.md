@@ -55,7 +55,8 @@ artifact: shot_intent_set
 context_pack_profile: director-planning
 primary_skill: ai-drama-director
 compatible_skill: ai-drama-visual-language
-canonical_owner: story_canon_owner proposal / production_owner intent
+canonical_owner: story_canon_owner planning proposal
+owner_handoff: accepted Auctra storyboard handoff -> production_owner
 ```
 
 导演提案接受后，下一 stage 才以 `ai-drama-visual-language` 为 primary。
@@ -188,3 +189,31 @@ gates:
 ```
 
 该计划不把“一键”解释为已有的单命令 goal。Orchestrator 先检查宿主声明的 capability registry，只调用真实存在的细粒度 capability 或已注册 workflow；完整 episode production goal 未注册时返回 capability gap，而不是伪造自动化。任何相似性风险都返回 `similarity_review_required`，并回到对应 owner 产生 successor candidate。
+
+## 12. 用户点名电影技法做分镜
+
+用户：「这集开场用希区柯克变焦，审讯室那场用伦勃朗光。」
+
+路由读取 `cinematique-shot-technique-library.md`，命中官方模板
+`promptrepo://official/video/cinematique-shot-techniques-beta@1.0.0-beta.1?locale=en`：
+
+```yaml
+goal: storyboard with named film techniques
+phase: director_plan
+artifact: storyboard_candidate
+primary_skill: ai-drama-director
+compatible_skill: ai-drama-visual-language
+technique_bindings:
+  - shot: EP03-S01（天台对峙开场）
+    technique_id: vertigo-effect
+    rationale: vertigo-effect spec when_to_use —— 空间失衡=心理恐惧；advanced，需模型执行力确认
+  - shot: EP03-S04（审讯室）
+    technique_id: rembrandt-lighting
+    rationale: 半脸阴影=隐瞒与道德暧昧
+constraint: single_technique_per_shot
+canonical_owner: story_canon_owner planning proposal
+```
+
+导演提案把 `technique_id` + 选型理由写进分镜 camera/lighting 字段；进入 generation 时由
+`technique_prompt_bound`（spec 提示词替换 `[Subject]`）提供镜头 prompt 技术段。若用户点名的
+技法在库中无对应技术，不虚构绑定，返回 `missing_inputs` 并给出最接近的候选技术。
