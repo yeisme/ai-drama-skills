@@ -54,6 +54,17 @@ generated → assessed_visual + assessed_audio → recommended → human_review 
 
 禁止 `assessed → selected`、`recommended → production_accepted`、视觉 pass 自动继承音频 pass，和“provider succeeded 即交付”。
 
+## If this fails
+
+| Trigger | First fix | Still failing |
+| --- | --- | --- |
+| 剧型 / 原创性未冻结 | 先完成 `ai-drama-router` 对应 gate | 不得直接进入 Writer 或 provider |
+| 没有 `shortdrama.episode-production` | 检查 `scaena workflow list --agent` | 不得声称“一键整集”已经可用 |
+| 付费生成前未确认分镜方向 | 显式呈现故事脊柱、逐镜节拍、对白主干、视觉基调与时长合同 | 不进入生成 |
+| `scaena enhance run` | 只允许 fixture 驱动验证 | 不宣称真实付费 enhancement provider 已接通 |
+| 缺陷修复 | 分类后交给对应 owner；每个失败只允许一个有界 repair loop | 不无限 reroll 或覆盖最终文件 |
+| 缺 production acceptance / originality / delivery review | 停在对应 gate | Export 不自动等于 publish |
+
 ## 当前能力边界
 
 - 当前默认运行方式是细粒度阶段命令和已注册 workflow 的组合。

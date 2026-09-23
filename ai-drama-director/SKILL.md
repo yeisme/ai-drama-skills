@@ -18,7 +18,7 @@ description: Use when converting story emotion and character action into blockin
 5. 为每个镜头冻结 `ShotAudioIntent`：逐 cue 标注 ambience、Foley、dialogue、music、motif、silence 的时间窗、空间方向、同步点、lip-sync、provider audio policy、Sonora final mix owner 和验收条件。完整字段读取 `../ai-drama-router/references/shot-audio-intent-contract.md`。
 6. 使用 H3、Wan、Seedance、Kling V3 / Omni 或混合参考视频时，读取 `../ai-drama-router/references/video-model-capability-index.md` 和命中的独立档案，冻结 provider-neutral task intent、引用用途/ordinal、ratio/duration policy、workflow profile 和 capability maturity。不要把 provider wire mode 写进导演 canonical artifact；adapter 从中立 policy 推导。
 7. 原生对白默认采用 `replace_after_generation`。只有 capability 达到已验证线路、逐句台词/说话人/声线/情绪可控，并且 rights、lip-sync、可编辑性与人工声音验收都有证据时，才把该镜 policy 提升为 `video_native`；视觉通过不能替代声音通过。
-8. 输出 `DirectorDecisionGraph`、`ShotIntent`、`ShotAudioIntent` 或 repair proposal，交给视觉/声音/剪辑 owner。
+8. 输出 `DirectorDecisionGraph`、`ShotIntent`、`ShotAudioIntent` 或 repair proposal。Auctra 创作路线先把它们作为 planning candidate 进入 Auctra review；只有 accepted production handoff 才交给 Scaena/Eikona/Sonora 等下游 owner。
 
 ## 质量门槛
 
@@ -33,7 +33,7 @@ description: Use when converting story emotion and character action into blockin
 
 ## 边界与验证
 
-不直接调用 provider、不冻结主体、不接受资产。Director 决定声音叙事意图但不拥有音频资产；音频资产与 mix refs 交给 Sonora，视觉执行交给 Eikona，生产接受与时间线交给 Scaena：
+不直接调用 provider、不冻结主体、不接受资产。Auctra 拥有 DirectorScenePlan、创作 StoryboardPlan 和声音叙事意图；Director 不拥有音频资产。音频资产与 mix refs 交给 Sonora，视觉执行交给 Eikona，accepted production handoff 之后的生产接受与时间线交给 Scaena：
 
 ```bash
 python3 scripts/validate_skills.py

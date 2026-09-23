@@ -6,6 +6,8 @@
 
 ## 能力分组
 
+做剧前先按[目标优先制作](ai-drama-router/references/goal-first-production.md)选择这轮路线。故事试写、动作demo、单集成片与模块化资产库需要不同的证据和资产范围；已有明确目标不重复访谈，快速demo不默认要求透明头模或完整拆层。
+
 - 项目启动：`manga-drama-project-starter`（默认英文、显式中文、Auctra + Scaena lazy workspace）
 - 路由与策略：`ai-drama-router`、`ai-drama-context-pack-builder`（形态策略已收编为 `writing/ai-drama-format-strategy` 模板）
 - 故事与人物：已收编为官方模板 `writing/ai-drama-story-architecture`、`writing/ai-drama-character-engine`、`writing/ai-drama-showrunner`（经 Template Registry 确定性编译，无需安装 Skill）

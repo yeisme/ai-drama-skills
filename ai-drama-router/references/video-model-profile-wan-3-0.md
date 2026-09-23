@@ -25,6 +25,11 @@ All-in-One async endpoint，provider 可自动判断任务意图；Scaena 仍必
 - 从文档或网页上下文形成视频 brief；
 - 视频 edit/extend 与自动意图路由。
 
+## Prompt 写作
+
+分镜转 wan3.0 prompt、@图片N 指代、失败 case 归因修复走 `$wan3-prompt-optimizer`；
+本档案只描述能力合同与门禁，不承载 prompt 写法规则。
+
 ## 门禁与回退
 
 - edit/extend 需要 reference video；frames 只接受 first/last；text 不接受媒体。

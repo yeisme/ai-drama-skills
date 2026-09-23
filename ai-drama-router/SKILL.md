@@ -102,6 +102,16 @@ credential 或 provider payload。
 
 复杂跨阶段请求还应输出有序 `stage_plans`；每个 stage 仍只有一个 primary 和最多一个 constraint。
 
+## If this fails
+
+| Trigger | First fix | Still failing |
+| --- | --- | --- |
+| 剧型/时长不清且会改结构 | `needs_format_decision`；format-strategist 或一问 | 不让 Writer 猜承载形态 |
+| 纯原创无证据 / 改编缺权利 | `needs_originality_decision` 或 rights blocker | 不把改名换脸当原创 |
+| 评估无合同 | 先 `ai-drama-assessment` | 不给未经合同的综合数字分 |
+| 付费/冻结/导出/安装 | 停在对应 gate | 不把“继续”当授权 |
+| 多个 writer 争同一 canon | `writer_conflict` | 不同时激活竞争 writer |
+
 ## 严格失败条件
 
 - `needs_format_decision`：承载形态不清且会改变结构。
