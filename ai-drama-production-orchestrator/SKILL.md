@@ -1,6 +1,6 @@
 ---
 name: ai-drama-production-orchestrator
-description: Use when coordinating a complete original AI drama or manga-drama pipeline from Auctra story and screenplay canon through Scaena storyboard breakdown, subject-card drawing, shot generation, episode assembly, defect-routed refinement, delivery review, and final export, with Eikona/Sonora/Ordo handoffs, originality and rights gates, bounded retries, receipts, evidence, and honest current-capability checks.
+description: Use when coordinating a complete original AI drama or manga-drama pipeline from Auctra story and screenplay canon through Scaena storyboard breakdown, subject-card drawing, shot generation, episode assembly, defect-routed refinement, delivery review, and final export, with Eikona/Sonora handoffs, originality and rights gates, bounded retries, receipts, evidence, and honest current-capability checks.
 ---
 
 # AI Drama Production Orchestrator
@@ -35,7 +35,7 @@ description: Use when coordinating a complete original AI drama or manga-drama p
 7. 视频路线可能生成原生音频时，把 `screenplay/dialogue → ShotAudioIntent → capability/policy → video-native registration or Sonora render → sound review → Scaena assembly` 建成显式 stage handoff。默认 `replace_after_generation`；只有独立证据齐全才允许 `video_native`。
 8. 视频 generation stage 绑定 provider-neutral task policy、reference ordinal/count、ratio/duration lock、output/audio policy、workflow profile 和 capability maturity，并携带 `binding_mode=non_binding` 的 family guidance；provider wire hint 由 adapter 推导。全量合同/fixture 支持不等于 live/production ready，社区信号不得改变路由。
 9. 为每个 stage 生成最小、版本化、可失效的 `DramaContextPack`；不得把上一个阶段的全量上下文原样传给所有下游。
-10. 逐镜生成候选，按 visual、audio、continuity、human review 和 production acceptance 顺序推进。Ordo 可运行有界并行候选/评委并保存 evidence，但不获得 owner 权限。
+10. 逐镜生成候选，按 visual、audio、continuity、human review 和 production acceptance 顺序推进。评估执行 owner（待重新准入）可运行有界并行候选/评委并保存 evidence，但不获得 owner 权限。
 11. 用 Scaena episode preview、edit plan/timeline/render/score/select 完成拼接与选版；自动评分只生成 recommendation。
 12. 先分类缺陷，再回 Auctra、storyboard、asset/Eikona、shot generation、Sonora、edit 或 delivery owner 产生 successor。每个失败只允许一个有界 repair loop；不得无限 reroll 或覆盖最终文件。
 13. 处理 pause/resume、partial failure、unknown accept、Skill/context drift 和 stale invalidation。只使受影响的未开始后代 stale。
@@ -74,9 +74,7 @@ generated → assessed_visual + assessed_audio → recommended → human_review 
 ## 验证
 
 ```bash
-cd agent/ordo
-bun run test
-cd ../../agent/scaena
+cd agent/scaena
 task test:architecture
 task test:integration
 ```

@@ -1,26 +1,26 @@
 ---
 name: auctra-ai-drama-panel-handoff
-description: Use when an Auctra screenplay scene or novel chapter must be prepared for Ordo PanelRun evaluation, when a typed PanelRun result must be consumed into Auctra review evidence, or when reviewing the CLI/MCP parity and fail-closed boundary of that handoff.
+description: Use when an Auctra screenplay scene or novel chapter must be prepared for PanelRun evaluation by an admitted evaluation execution owner (currently vacant), when a typed PanelRun result must be consumed into Auctra review evidence, or when reviewing the CLI/MCP parity and fail-closed boundary of that handoff.
 ---
 
 # Auctra AI Drama Panel Handoff
 
 ## Owner boundary
 
-Auctra owns accepted text, Story World refs, source revisions and review decisions. Ordo owns PanelRun scheduling, evaluator fan-out, correlation clusters, quorum, aggregation, adjudication and reconcile. This skill connects the two owners with typed refs; it never becomes a scheduler or a second consensus engine.
+Auctra owns accepted text, Story World refs, source revisions and review decisions. The admitted evaluation execution owner (currently vacant; the former owner retired 2026-09-26) owns PanelRun scheduling, evaluator fan-out, correlation clusters, quorum, aggregation, adjudication and reconcile. This skill connects the two owners with typed refs; it never becomes a scheduler or a second consensus engine.
 
 ## Workflow
 
 1. Read `cli/auctra/openspec/changes/auctra-ai-drama-story-handoff-v1/` and confirm the source revision is accepted and not stale.
-2. Freeze `subject_ref`, `subject_scope`, `context_ref`, `assessment_contract_ref`, `format_profile`, `genre_lens`, `evaluation_intent`, `profile_ref`, `rubric_digest`, `hard_gate_refs`, `owner_grant` and a stable `idempotency_key`. If naturalness is in scope, also freeze `naturalness_profile`, lane refs, `naturalness_report_refs`, `voice_profile_ref`, `calibration_set_ref` and `style_exemptions`. Do not place screenplay text, prompt text, provider payloads or private Ordo state in the packet.
+2. Freeze `subject_ref`, `subject_scope`, `context_ref`, `assessment_contract_ref`, `format_profile`, `genre_lens`, `evaluation_intent`, `profile_ref`, `rubric_digest`, `hard_gate_refs`, `owner_grant` and a stable `idempotency_key`. If naturalness is in scope, also freeze `naturalness_profile`, lane refs, `naturalness_report_refs`, `voice_profile_ref`, `calibration_set_ref` and `style_exemptions`. Do not place screenplay text, prompt text, provider payloads or private execution-owner state in the packet.
 3. Compile the packet through the Auctra owner projection:
 
    ```bash
    auctra story handoff evaluation-packet --packet-ref <ref> --project-ref <ref> --subject-ref <ref> --scope screenplay_scene --context-ref sha256:<digest> --profile screenplay-craft-v1 --rubric-digest sha256:<digest> --hard-gate-ref <ref> --owner-grant <ref> --idempotency-key <key> --json
    ```
 
-4. Pass the returned packet to the Ordo agent tool `ordo.panel.start`. Do not implement evaluator retries, quorum, median/IQR, disagreement adjudication or provider calls in Auctra.
-5. When Ordo returns its typed result, bind it to the expected source and rubric digests and validate it through Auctra:
+4. Pass the returned packet to the admitted evaluation execution owner panel start tool (the former panel start surface retired with its owner on 2026-09-26; a re-admitted owner must publish an equivalent typed entry point). Do not implement evaluator retries, quorum, median/IQR, disagreement adjudication or provider calls in Auctra.
+5. When the execution owner returns its typed result, bind it to the expected source and rubric digests and validate it through Auctra:
 
    ```bash
    auctra story handoff panel-result --from - --expected-source-digest sha256:<digest> --expected-rubric-digest sha256:<digest> --evidence-ref <ref> --json
@@ -34,13 +34,13 @@ Auctra owns accepted text, Story World refs, source revisions and review decisio
 - `novel_chapter` → `novel-craft-v1`; do not reuse screenplay dimensions or claim full-novel coverage.
 - Candidate comparison, disagreement and repair reasoning belongs to `ai-drama-critic-panel`; Auctra only compiles/consumes its typed boundary.
 - Cost, permission, capability and retry admission belongs to `ai-drama-producer`.
-- Ordo/Scaena pause, resume and production handoff belongs to `ai-drama-production-orchestrator`.
+- Execution-owner/Scaena pause, resume and production handoff belongs to `ai-drama-production-orchestrator`.
 
 ## Fail-closed rules
 
 - Missing context/assessment contract/profile/rubric/hard gate/owner grant/idempotency → `needs_contract`.
-- Assessment contract not `ready_for_scoring`, or `score_eligibility` is not `eligible` → `assessment_not_ready`; return to `ai-drama-assessment` instead of asking Ordo to invent a rubric.
-- Naturalness lane evidence or calibration digest missing → `naturalness_not_comparable`; preserve the finding refs and do not let Ordo infer an AI-source score.
+- Assessment contract not `ready_for_scoring`, or `score_eligibility` is not `eligible` → `assessment_not_ready`; return to `ai-drama-assessment` instead of asking the execution owner to invent a rubric.
+- Naturalness lane evidence or calibration digest missing → `naturalness_not_comparable`; preserve the finding refs and do not let the execution owner infer an AI-source score.
 - Source revision or digest mismatch → stale/conflict; never score it as current.
 - Profile/scope mismatch → reject; never silently coerce.
 - Unknown, inconclusive, blocked or conflicting result → preserve refs and require human review.
@@ -53,4 +53,4 @@ Auctra owns accepted text, Story World refs, source revisions and review decisio
 python3 scripts/validate_skills.py
 ```
 
-端到端交接验证应由 Auctra 与 Ordo 的 Owner 仓库分别运行各自公开的 contract tests；不要在本 Skill 仓库绑定宿主机绝对路径或私有测试目录。
+端到端交接验证应由 Auctra 与评估执行 owner 的 Owner 仓库（重新准入后）分别运行各自公开的 contract tests；不要在本 Skill 仓库绑定宿主机绝对路径或私有测试目录。

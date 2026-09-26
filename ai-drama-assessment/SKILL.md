@@ -105,7 +105,7 @@ description: Use when evaluating, scoring, or comparing an existing drama or scr
 
 - Agent/本 Skill：建立合同、选择题材镜头、做定性分析并路由下一步。
 - Auctra：保存 source ref、revision、digest、确定性自然度证据、场景/状态门禁、review evidence；不替代题材判断或声称作者来源。
-- Ordo：合同冻结后执行盲评、评委扇出、相关性簇、聚合、分歧裁决和 repair proposal；不替代人类接受。
+- 评估执行 owner（原 owner 已退役，待重新准入）：合同冻结后执行盲评、评委扇出、相关性簇、聚合、分歧裁决和 repair proposal；不替代人类接受。
 - Scaena：只在剧本被接受后判断分镜/生产可行性；不把生产门禁倒推成故事质量分。
 
 ## 验证

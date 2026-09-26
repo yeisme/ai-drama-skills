@@ -8,7 +8,7 @@
 - Scaena 是 ProductionGraph、分镜接受、主体资格、镜头候选、装配、交付与导出 owner；
 - Eikona 是图片/视觉 artifact 生成 owner，默认模型固定为 `openai/gpt-5.4-image-2`；
 - Sonora 是独立音频 artifact 与 mix owner；
-- Ordo 只编排并行候选、评委和 evidence，不成为业务 canon；
+- 评估执行 owner（待重新准入）只编排并行候选、评委和 evidence，不成为业务 canon；
 - 每个自动步骤都能停在 gate、保存 receipt、从失败点恢复，并把缺陷路由回真正 owner。
 
 本流程描述可执行的细粒度命令组合，不假装当前已经存在一个万能命令。
