@@ -36,3 +36,5 @@ python3 scripts/validate_drama_matrix.py
 ```bash
 python3 scripts/validate_skills.py
 ```
+
+- [持续集成与交付](delivery/ci-cd.md)：按改动选择检查，区分本地、远端与发布证据。
