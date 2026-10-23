@@ -59,7 +59,7 @@ AssessmentContractV1 {
 | `naturalness_score` | 0–4，高为好 | 人物、场景、声音和节奏是否像在具体语境中自然运作 | 不代表一定由人写作 |
 | `pattern_risk` | 0–4，高为坏 | 是否出现可定位的模板化、机器式密度或结构重复 | 不代表 AI 来源概率 |
 
-系统不得输出“AI生成概率”、作者归因或检测规避结论。`clean` 只表示没有触发当前 profile 的已配置模式，不能写成“确定是人写”。
+系统不得输出“AI生成概率”、作者归因或检测规避结论；`author_source_inference_forbidden` 是严格失败状态。`clean` 只表示没有触发当前 profile 的已配置模式，不能写成“确定是人写”。
 
 ## 4. 三条自然度分轨
 
