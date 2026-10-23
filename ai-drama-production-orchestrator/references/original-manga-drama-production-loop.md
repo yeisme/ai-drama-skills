@@ -6,7 +6,7 @@
 
 - Auctra 是故事、人物和剧本 canon owner；
 - Scaena 是 ProductionGraph、分镜接受、主体资格、镜头候选、装配、交付与导出 owner；
-- Eikona 是图片/视觉 artifact 生成 owner，默认模型固定为 `openai/gpt-5.4-image-2`；
+- Eikona 是图片/视觉 artifact 生成 owner，默认模型固定为 `openai/gpt-image-2.5-sunburst`；
 - Sonora 是独立音频 artifact 与 mix owner；
 - 评估执行 owner（待重新准入）只编排并行候选、评委和 evidence，不成为业务 canon；
 - 每个自动步骤都能停在 gate、保存 receipt、从失败点恢复，并把缺陷路由回真正 owner。
@@ -141,7 +141,7 @@ handoff 必须携带 revision/digest、accepted screenplay refs、originality de
 ```bash
 scaena storyboard source import --help
 scaena storyboard breakdown run --help
-scaena storyboard breakdown show --help
+scaena storyboard breakdown describe --help
 scaena storyboard breakdown revise --help
 scaena storyboard breakdown patch --help
 scaena storyboard breakdown accept --help
@@ -190,7 +190,7 @@ Eikona 生成视觉候选时使用 canonical 模型：
 
 ```bash
 eikona generate <visual-brief> \
-  --model openai/gpt-5.4-image-2 \
+  --model openai/gpt-image-2.5-sunburst \
   --json
 ```
 
