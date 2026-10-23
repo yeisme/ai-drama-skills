@@ -27,7 +27,7 @@ description: Use when defining AI drama production constraints, cost caps, right
 - `contract_declared`、`local_fixture_verified`、`provider_canary_verified` 和 `production_ready` 必须分开；50 引用、纯音频、多语言、1080p 或 MOV 出现在官方文档或 fixture 中，不代表远端配额、真实质量或 production admission 已通过；
 - 模型/线路 capability digest、镜头时长或音频 policy 变化会使未开始 generation spec stale，禁止静默沿用旧声音假设；
 - 社区热度、star、播放量和营销样本只允许作为按需研究信号，不得改变 eligible/suggested family、成熟度、预算或 production admission；
-- Eikona 出图默认模型为 `openai/gpt-5.4-image-2`；`gpt-5.4-image-2` 与 `gpt-image-2` 为兼容短别名，模型漂移必须显式记录。
+- Eikona 出图默认模型为 `openai/gpt-image-2.5-sunburst`；`gpt-5.4-image-2` 与 `gpt-image-2` 为兼容短别名，模型漂移必须显式记录。
 
 ## 边界与验证
 
