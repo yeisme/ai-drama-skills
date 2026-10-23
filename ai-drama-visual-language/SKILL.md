@@ -13,7 +13,7 @@ description: Use when translating AI drama shot intent into Eikona visual briefs
 
 1. 读取 `ShotIntent`、frozen SubjectVersion、StyleVersion、reference refs 和 ProductionConstraintProfile。
 2. 生成多个候选 brief，固定 seed、模型 ref、候选数和成本策略。
-3. 使用 Eikona 生成候选并建立 CandidateSet；新命令必须显式使用 `--use-channel <channel>`、canonical 模型 ref `openai/gpt-5.4-image-2`、明确 `--size`/`--aspect`，参考图只作为 `--reference-mode generate` 的 guidance。`gpt-5.4-image-2` 与 `gpt-image-2` 仅作为兼容短别名。
+3. 使用 Eikona 生成候选并建立 CandidateSet；新命令必须显式使用 `--use-channel <channel>`、canonical 模型 ref `openai/gpt-image-2.5-sunburst`、明确 `--size`/`--aspect`，参考图只作为 `--reference-mode generate` 的 guidance。`gpt-5.4-image-2` 与 `gpt-image-2` 仅作为兼容短别名。
 4. 通过 `eikona review packet`、`eikona assets handoff`、`eikona assets stage` 和 `eikona assets apply` 管理证据与项目落盘；不要直接读取或复制用户级 runstore 的绝对路径。
 5. 生成 contact sheet、visual assessment 和 continuity findings。
 6. 输出 review packet 和 accepted feedback handoff；不能把 artifact、library item 或项目文件直接当作 Scaena production accepted。
@@ -23,7 +23,7 @@ description: Use when translating AI drama shot intent into Eikona visual briefs
 ```bash
 eikona generate \
   --use-channel openai \
-  --model openai/gpt-5.4-image-2 \
+  --model openai/gpt-image-2.5-sunburst \
   --ref subject=./references/source-subject.png \
   --reference-mode generate \
   --input prompts/scaena/subject-candidate/<subject-ref>/prompts/01-candidate-a.md \
