@@ -29,26 +29,35 @@ Router 不代写完整剧本、不成为新的创作数据库，也不为一次�
 - `director_plan`、`visual_plan` 或 `generation` 需要为镜头选择运镜/布光/构图/剪辑/叙事/风格语言，或用户点名具体电影技法时，读取 `references/cinematique-shot-technique-library.md`，从官方 Cinematique 模板选一条技术并绑定主体；一个镜头只绑一条主技术。
 - 需要校验美剧、竖屏短剧、漫剧、电影和已有剧本请求时读取 `references/route-examples.md`。
 
+## 输入
+
+请求目标、媒介/剧型、阶段、artifact、已有 canon/context refs、原创性模式、评估合同和 owner 状态。
+
+## 工作流
+
+先确定本轮交付，再解析 format、phase、artifact、context、primary 与 gate；不在 Router 内直接写 canonical 剧本或生产资产。
+
+## 六类内容默认路由
+
+小说、剧本、短视频、视觉 brief、音频剧和教学/演示内容按最窄 owner 或模板路由；缺失结构承诺时返回对应 decision 状态。
+
+## Auctra 轻集成
+
+本地使用已安装 CLI；远程使用 discovery/schema、MCP/HTTP invoke、status 和 resource/download。生成、accept、apply、saved version、production handoff 和 export 保持分离。
+
 ## 路由流程
 
-先按 [目标优先制作](references/goal-first-production.md)确定本轮交付和必要证据，再执行以下路由。资产完整度服从交付目标；快速 demo 不默认要求六视图、表情库、拆层或透明通道。沿用已有明确选择与授权，不重复询问；这不取消成本、权利和正式生产接受边界。
+先按 [目标优先制作](references/goal-first-production.md)确定本轮交付和必要证据，再识别作者动作：启动/资料属于规划或整理，产出剧本属于写作，候选检查属于审稿，基于 finding 形成 successor candidate 属于修订，refs/digest/owner receipt 准备属于整理。资产完整度服从交付目标；快速 demo 不默认要求完整资产库。
 
 1. 识别十五个轴：`medium`、`format_profile`、`genre_lens`、`phase`、`artifact`、`task_role`、`evidence_state`、`canonical_owner`、`activation_scope`、`artifact_disposition`、`persistence_policy`、`batch_policy`、`acceptance_state`、`originality_mode`、`assessment_state`。
-2. 生成或读取 `OriginalityDecision`。用户要求纯原创时固定为 `pure_original`；涉及改编、作品/创作者参考或外部素材时必须记录来源、权利依据、排除项、差异化约束和相似性 review gate。缺失时返回 `needs_originality_decision`，不得把“原创”当作无证据的标签。
-3. 剧型、单集时长、季/集形态或类型承诺不明确，且会改变结构判断时，把 `writing/ai-drama-format-strategy` 模板作为 primary；不要让 Writer 猜承载形态。
-4. 用户要求“评估/打分/看看好不好”或提到“AI味”但没有冻结 `AssessmentContract` 时，先选择 `ai-drama-assessment`；只输出题材化定性评估、自然度/机器模式风险分轨和缺失字段，不给未经合同批准的综合数字分。不要把通用 P0 生产门禁当作题材质量评分，也不要推断作者来源或平台标签。
-5. 读取已有 CanonSnapshot、revision/digest、当前 artifact、最近 blocker 和权限/成本状态。跨项目知识只消费宿主声明的 Owner refs 或权限感知 ContextPack，不直接遍历私有状态。
-6. 根据阶段选择一个 `context_pack_profile`。除纯 intake 外，需要 owner/project 历史的工作先调用 `ai-drama-context-pack-builder` 准备最小上下文。
-7. 若目标视频 route 支持、可能支持或曾观察到原生音频，`director_plan` 必须先产出版本化 `ShotAudioIntent`；缺失时返回 `needs_audio_intent`，不得把声音留给 provider 自由补全。
-8. 用户点名导演、作品、流派、情绪或视觉风格时，先使用 `creative-style-lens-builder` 生成原创 `StyleLens`；人名只保留在 source refs，不把 persona identity 传给 writer/provider。
-9. 若请求命中上游视频生产模式，只选择一个主要 pattern family，把 repository、固定 commit、license status、adoption mode 和 verified date 记录进现有 `input_refs[]`。上游 pattern 不得成为 primary Skill 或 canonical owner，也不得在当前 stage 中联网刷新。
-10. 新写或大幅重写超过 5 集时，将 `batch_policy` 设为 `proof_slice`：先选 3 个能检验人物声音、冲突策略和后果的代表集，每集只写一个核心场景并产生 A/B 策略候选。用户未确认主要人物声音前，不生成剩余全集。
-11. 选择一个 primary Skill。只有连续性、风格、生产约束或明确输入依赖需要时，增加一个 compatible constraint Skill。
-12. generation stage 需要视频模型能力时，生成 `binding_mode=non_binding` 的 `video_model_guidance`：先按硬约束过滤，合法 exact lock 优先；仅在硬能力或用户偏好产生唯一匹配时给出一个 suggested family。多个家族满足时只给 eligible families，交给生产 policy owner；不得按社区热度破平局。
-13. 模板承载的 primary 先解析为 `template_ref_available`（官方 exact ref 已就绪，无需安装决策）。其余 Skill 按 `active → resolved_local_on_demand → needs_profile_promotion → needs_install_decision` 顺序解析。一次性任务默认停在 local on-demand，不执行持久化 activation。
-14. 若项目高频需要该 Skill，生成宿主无关的 `SkillActivationPlan`。宿主声明了启用适配器时可交给该适配器；未声明时只返回 proposal。没有当前用户的明确启用/安装授权时不得执行持久化变更。
-15. 独立决定输出格式、artifact disposition、persistence 和 acceptance。“写成 Markdown”只设置输出格式；未评审 preview/candidate 默认 `unreviewed`，只能留在聊天、操作系统临时目录或宿主 review workspace，不得写最终项目路径。
-16. 生成 Owner handoff、gates 和下一动作。在 provider call、canonical 修改、主体冻结、持久化 activation、production acceptance、export 或 publish 前停在对应 gate。**分镜/导演方向门禁**：任何付费资产生成（出图、视频、配音）之前，必须把分镜方向——故事脊柱、逐镜节拍、对白主干、视觉基调、时长合同——以用户能直接判断的形式显式呈现并获得当前用户确认；未确认不得进入生成阶段。
+2. 生成或读取 `OriginalityDecision`；缺失时返回 `needs_originality_decision`。
+3. 剧型、单集时长、季/集形态或类型承诺不明确且会改变结构判断时，返回 `needs_format_decision`，不要让 writer 猜承载形态。
+4. 读取已有 CanonSnapshot、revision/digest、当前 artifact、最近 blocker 和权限/成本状态。跨项目知识只消费宿主声明的 Owner refs 或权限感知 ContextPack。
+5. 根据阶段选择一个 `context_pack_profile`；需要 owner/project 历史时先调用 `ai-drama-context-pack-builder`。
+6. 选择一个 primary Skill，最多一个 compatible constraint；不批量启用全套 Skills。
+7. 整集正文是唯一 canonical screenplay，scene 绑定整集 AST/source span；不另造第二份场景正文。
+8. 独立决定 output format、artifact disposition、persistence 和 acceptance；`selected` 不等于 `accepted`，accepted screenplay 不等于 production-ready。
+9. 生成 Owner handoff、gates 和下一动作。在 canonical 修改、主体冻结、生产接受、export 或 publish 前停在对应 gate。
 
 ## 无项目随手视频路由（projectless quick）
 

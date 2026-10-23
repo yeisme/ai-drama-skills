@@ -26,4 +26,10 @@ AI Drama Skills 只消费和产生带版本的 refs、proposal 与 evidence，�
 
 Router 默认输出逻辑 Owner role。宿主可以通过 `owner_binding` 将逻辑 role 映射为本地 service、CLI、API、MCP tool 或 application action。未声明绑定时保留逻辑 role 并返回 handoff proposal，不猜测产品名、路径或命令。
 
+
+## 作者侧交接
+
+- 本地创作使用已安装 Auctra/Scaena CLI；远程创作先发现 `tools/list`、`input_schema`、capabilities/resource 和 HTTP input/download，客户端不安装 CLI、不传服务端路径、shell 或 actor。
+- Auctra 负责 canonical screenplay、revision、digest、review 和 accepted handoff；Scaena 只消费 accepted handoff 并拥有 ProductionGraph、生产接受、装配和交付；Eikona 负责 visual artifact。
+- `generate`、`accept`、`apply`、saved version、export/download、production acceptance 是不同 gate。未注册能力返回 `capability_missing`/`unregistered`，不伪造 receipt；远程长任务用原 run ref status 回查。
 宿主绑定不得改变以下语义：唯一 canonical owner、版本化 refs、typed mutation、stale invalidation 和 fail-closed gate。
