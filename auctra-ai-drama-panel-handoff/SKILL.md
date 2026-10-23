@@ -32,7 +32,7 @@ Auctra owns accepted text, Story World refs, source revisions and review decisio
 
 - `screenplay_scene` → `screenplay-craft-v1`; dimensions are scene-level craft and drama gates.
 - `novel_chapter` → `novel-craft-v1`; do not reuse screenplay dimensions or claim full-novel coverage.
-- Candidate comparison, disagreement and repair reasoning belongs to `ai-drama-critic-panel`; Auctra only compiles/consumes its typed boundary.
+- Candidate comparison, disagreement and repair reasoning belongs to `template:writing/ai-drama-critic-review` with `ai-drama-continuity-supervisor` as needed; Auctra only compiles/consumes its typed boundary.
 - Cost, permission, capability and retry admission belongs to `ai-drama-producer`.
 - Execution-owner/Scaena pause, resume and production handoff belongs to `ai-drama-production-orchestrator`.
 
