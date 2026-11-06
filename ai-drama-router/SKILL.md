@@ -184,6 +184,8 @@ Router 仍是唯一语义入口，只选一个 primary、最多一个 compatible
 
 - 每阶段只选一个 primary + 最多一个 constraint；上游 `ref + digest` 与结论齐全才进入下一段；
 - 已完成阶段不重做；进度询问不暂停、不重置授权；UNKNOWN 只读 `reconcile`；
+- 三类生成（`image|video|audio`）统一走 `GenerationCapability<kind>`；`binding_policy=auto_executable` 时入口差异由 `GenerationBinding` 承载，resolver 自动选 `executable` binding，**不询问 `cli|mcp`**；
+- 一次 `ApprovalWindow` 覆盖窗口内全自动；可重试错误在 `retry_budget=2` 内自动重试（同一 `action_id` / `idempotency_key` / `intent_digest`），UNKNOWN 不消耗预算，越界或耗尽交 `needs_decision`；
 - 生成、选图、绑定、备案、复核、整体完成分开报告；**停在正片提交前**；
 - 不自动派生子代理、不自动付费、不自动发布；费用与正片提交需新的明确授权。
 

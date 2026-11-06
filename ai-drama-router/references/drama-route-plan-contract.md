@@ -171,6 +171,9 @@ automation_profile?:
   visual_review_default: text_first         # 默认不主动看图
   subagents: disabled_unless_explicit      # 默认关闭
   unknown_policy: reconcile_readonly       # UNKNOWN 不重投、不换幂等键
+  retry_budget: 2                          # 可重试错误自动重试上限；UNKNOWN 不消耗
+  approval_window_ref: <FrozenRef>          # 一次审批 = 一个自动化窗口
+  binding_policy: auto_executable           # resolver 自动选 executable binding，不问 cli/mcp
   completion_evidence:
     per_stage: stage_receipt
     per_episode: verify_preparation_complete
@@ -186,5 +189,7 @@ automation_profile?:
 - `ACCEPTED / COMPLETED / BOUND / REVIEWED / STAGE_COMPLETE / EPISODE_PREPARED / FULL_SCOPE_PREPARED` 分开报告，禁止互相冒充；
 - `FULL_SCOPE_PREPARED` 不等于正片已提交、成片完成或审美验收；
 - 付费生成与正片提交需要新的明确授权；`--confirm` 不得被「继续」覆盖。
+- 三类生成（`image|video|audio`）只认一个作用 `GenerationCapability<kind>`，入口差异由 `GenerationBinding` 承载；`binding_policy=auto_executable` 时 resolver 自动选 `executable` binding，选择理由写 `receipt.binding_ref`，不询问 `cli|mcp`。
+- 可重试错误在 `retry_budget`（默认 2）内自动重试，每次保持同一 `action_id` / `idempotency_key` / `intent_digest` / `approval_window_ref`；UNKNOWN 只 `reconcile` 且不消耗预算；越界或耗尽交 `needs_decision`。
 
 完整流程纪律与映射见聚合仓 `https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/automation-core.md`。

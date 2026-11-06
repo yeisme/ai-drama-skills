@@ -21,12 +21,12 @@
 | --- | --- |
 | `bootstrap-prompt.md` | 完整版：逐条命令 + 全部门禁 |
 | `bootstrap-prompt-short.md` | 简短版：~20 行，委托给 Skill |
-| `bootstrap-prompt-progressive.md` | 渐进式：L0 探测 / L0.5 方式确认 / L1 skills / L2 CLI / L3 连接 / L4 交接，每层可停 |
+| `bootstrap-prompt-progressive.md` | 渐进式：L0 探测 / L0.5 审批窗口 / L1 skills / L2 工具 / L3 连接 / L4 交接，每层可停 |
 | `prompt-variants.md` | 三版对照与选择指南 |
-| `surface-choice.md` | **方式门禁**：`cli` / `mcp` / `both` 必须明确询问，含两条路径命令与差异 |
+| `surface-choice.md` | **binding 参考**（已降级）：CLI / MCP / HTTP / SDK 命令与差异，不再是流程门禁 |
 | `install-and-connect.md` | 安装与连接真实命令全表 |
 
-所有版本共有的硬门禁：阶段 0 之后、任何安装或连接之前明确询问一次 `SURFACE`，不自动推断、不接受模糊表达；凭据只给 0600 路径；不自动付费、不派生子代理、UNKNOWN 只读 reconcile、停在正片提交前。
+所有版本共有的机制：**不再询问 `cli|mcp|both`**；流程只认 `GenerationCapability<kind>`（`image|video|audio`），resolver 自动选 `executable` binding。凡 agent 发起的非只读动作都要审批，但用一次 `ApprovalWindow` 实现窗口内全自动（含 `retry_budget=2` 自动重试、自动换 binding、连续推进）；越界或耗尽交 `needs_decision`。UNKNOWN 只 `reconcile` 不消耗预算；凭据只给 0600 路径；不自动付费、不派生子代理、停在正片提交前。完整设计见聚合仓 `docs/drama-execution-kernel/capability-abstraction.md`。
 
 `ai-drama-router` 仍是唯一语义入口，新增 `execution_lane` 轴按需选中上述 skill；`ai-drama-production-orchestrator` 统一引用收据词汇。**不要在本仓复制或改写设计正文**，避免与聚合仓出现两份不同口径。
 

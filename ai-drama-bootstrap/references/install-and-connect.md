@@ -28,7 +28,8 @@
 | `PROJECT` | owner 侧 project id | 如 `project:drama-s01` / `drama-s01` |
 | `STORY_PATH` | 剧本 / 小说文件绝对路径 | 由 Router 消费，bootstrap 不解析内容 |
 | `RUNTIMES` | Agent runtime 列表 | `agents,codex`；`auto` 由 setup 自行判定 |
-| `SURFACE` | 接入方式 | **必须明确询问** `cli` / `mcp` / `both`，不自动推断；决定阶段 1/2/3 的分支 |
+| `APPROVAL` | 一次审批窗口 | `ApprovalWindow`（`capability_kinds[]` / `intent_digest` / `binding_allowlist` / `count` / `cost_ceiling` / `retry_budget=2`）；**不询问 `cli\|mcp\|both`**，binding 由 resolver 自动选 |
+| `binding_allowlist` | 允许自动切换的 binding | 决定阶段 1/2/3 准备哪些候选；`planned/readonly/unavailable` fail-closed |
 
 ## 阶段 0 探测
 
@@ -85,9 +86,9 @@ scaena skills doctor --agent
 - 不向 `.codex/skills/` 重复安装同一 Skill；不从 runtime 副本发布源码。
 - 聚合仓 `yeisme-agent-my-skills` 带嵌套 submodule，安装做剧 skill 时指向 `ai-drama-skills` / `scaena-skills`，不指向聚合仓。
 
-## 阶段 3 连接（按 `SURFACE` 分支）
+## 阶段 3 连接（为 `binding_allowlist` 准备候选，**不是流程分支**）
 
-**surface=cli（remote connect）**
+**cli / http / sdk binding（remote connect）**
 
 ```bash
 eikona remote connect --endpoint <EIKONA_ENDPOINT> --key-file <KEY_FILE_EIKONA> --allow-private-http --project <PROJECT>
@@ -97,7 +98,7 @@ scaena remote doctor --json
 eikona remote describe --agent
 ```
 
-**surface=mcp（MCP stdio，客户端不需要产品 CLI）**
+**mcp binding（MCP stdio，客户端不需要产品 CLI）**
 
 ```bash
 eikona mcp doctor --endpoint <EIKONA_ENDPOINT> --key-file <KEY_FILE_EIKONA> --json
@@ -112,7 +113,7 @@ scaena mcp doctor --json
 
 远程 MCP 参考输入必须是 `eikona://artifact/<handle>` 或 `eikona://asset/<id>`；客户端绝对路径在 provider 调用前拒绝 `invalid_reference`。客户端文件先 `asset.upload.begin` → PUT → `asset.upload.complete` 得到 `eikona://asset/<id>`。同机 CLI 的本地路径仍合法，不混用。MCP 的 stdout 只承载 JSON-RPC 协议帧。
 
-**surface=both**：先 cli doctor，再 mcp 配置；同一 `action_id` 只在一侧执行，两侧报告同一 `event_cursor`。
+**多 binding 并存**：先完成 owner 侧 doctor，再配 MCP；同一个 `action_id` 只在一个 binding 上执行，换 binding 重试保持同一 `idempotency_key` / `intent_digest`，理由写 `receipt.binding_ref`。resolver 在运行时按 `discover()` 自动选，选择理由可审计。
 
 **MODE=owner（本机起服务，仅用户明确选择时）**
 
@@ -136,7 +137,7 @@ profile 落点：`~/.eikona/remote-profile.json`（`eikona.remote_profile.v1`）
 - MCP `tools/list` 不是能力愿望清单：planned / readonly / unavailable 不进 executable descriptors，不得假装可调用；`DeniedActionError` 对未知与无权限动作返回相同，停止并重估 lane，不探测 action 名。
 - 远程 MCP 里 worker 已 claim 且执行失败后必须投影 `failed`，不得继续 `queued`；`wait` 是有界观察，不是无限阻塞到出图。
 
-两条路径的完整差异与不变式见 [surface-choice.md](surface-choice.md)。
+各 binding 的差异与不变式见 [surface-choice.md](surface-choice.md)（已降级为参考）；三类生成能力、能力发现矩阵、有界重试与 `ApprovalWindow` 见聚合仓 `docs/drama-execution-kernel/capability-abstraction.md`。窗口内可重试错误自动重试最多 2 次，UNKNOWN 只 `reconcile` 且不消耗预算；越界或耗尽交 `needs_decision`。
 
 ## 阶段 4 交接
 

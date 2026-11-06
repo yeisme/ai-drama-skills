@@ -1,19 +1,23 @@
-# 接入方式选择（CLI / MCP / both）
+# GenerationBinding 参考（CLI / MCP / HTTP / SDK）
 
-> **硬门禁**：阶段 0 只读探测结束、任何安装或连接动作开始之前，Agent **必须向用户明确询问一次** `SURFACE`。不允许根据「检测到 CLI」「检测到 MCP host」「觉得更快」自动推断。模糊表达（`随便` / `你决定` / `用默认` / `推荐即可`）**不算明确选择**，必须列出候选并再问一次。
+> **状态：已降级为参考，不再是流程门禁。** 流程只认 `GenerationCapability<kind>`（`image|video|audio`）；CLI / MCP / HTTP / SDK / 本地 / 第三方都是它的 `GenerationBinding`。resolver 按 `discover()` 自动选 `executable` binding，选择理由写入 `receipt.binding_ref`，**不询问 `cli|mcp|both`**。
+>
+> 凡 agent 发起的非只读动作仍要审批，但改为一次 `ApprovalWindow`（`capability_kinds[]` / `intent_digest` / `binding_allowlist` / `count` / `cost_ceiling` / `retry_budget=2`）覆盖窗口内全自动；窗口内允许自动重试最多 2 次、自动换 binding。越界或耗尽交 `needs_decision`。完整设计见聚合仓 `docs/drama-execution-kernel/capability-abstraction.md`。
 
-## 必须问的那句话
+## binding 候选
 
-```text
-本机会以哪种方式接入做剧工具？请明确选择一项：
-  cli  — 安装 Eikona/Scaena/Auctra CLI，用 remote connect + --json/--agent 命令流（脚本、CI、批量、可审计命令链）
-  mcp  — 只配 MCP stdio 服务，由 MCP host 通过 tools/list + inputSchema + 资源调用（长驻 Agent、本机未装产品 CLI）
-  both — 先装 CLI 用于 owner 侧服务与 doctor，再配 MCP 给长驻 Agent；同一动作只执行一侧，不重复生成
-```
+| binding | `surface` | 何时被选中 |
+| --- | --- | --- |
+| Eikona CLI | `cli` | 脚本 / CI / 批量 / 需要完整命令族与可审计命令链 |
+| Eikona MCP | `mcp` | 长驻 Agent、本机未装产品 CLI、只需 `eikona.search` + `eikona.execute` allowlisted |
+| Eikona HTTP `/api/v1` / SDK | `http` / `sdk` | 服务化调用、OpenAI-compatible Images API 同步兼容 |
+| Scaena / Aigora / Sonora owner service | `owner_service` | video / audio 生成与生产写入 |
+| 本地 `codex:imagegen` | `local` | 同机临时图片 |
+| 第三方产品 | `third_party` | 验过四条等价准则后才纳管，默认 `needs_contract` |
 
-用户给出**明确具体值**后才继续；`both` 也要明确说出。选择结果写入 `BootstrapReceipt.surface`，后续阶段不得静默切换。
+`planned / readonly / unavailable` 一律 fail-closed；`DeniedActionError` 对未知与无权限返回相同，停止重估而非枚举探测。
 
-## 两条路径的真实命令
+## 各 binding 的真实命令
 
 ### CLI 路径
 
@@ -70,14 +74,14 @@ MCP 输入文件（**与 CLI 的关键差异**）：
 | 典型缺口 | `REMOTE_PROFILE_UNSUPPORTED_COMMAND` | Streamable HTTP blocked、planned inventory 不可调用 |
 | 适合 | 脚本、CI、批量、可审计命令链、控制中心 CLI 回读 | 长驻 Agent、无 CLI 的远程客户端、控制中心只读发现面 |
 
-### `both` 规则
+### 多 binding 并存
 
-1. 先按 `cli` 完成 owner 侧服务与 `doctor` 验证（服务与凭据只在 owner 侧）。
-2. 再按 `mcp` 配 stdio 给长驻 Agent；MCP 不 shell out 到 CLI、不读 CLI 私有持久化、不复制 provider payload。
-3. **同一个 `action_id` 只在一侧执行**；两侧都报告同一 `event_cursor`，不以「两边都成功」当成两次完成。
+1. owner 侧服务与 `doctor` 验证由 CLI / HTTP binding 完成（服务与凭据只在 owner 侧）。
+2. MCP stdio 给长驻 Agent 用；MCP 不 shell out 到 CLI、不读 CLI 私有持久化、不复制 provider payload。
+3. **同一个 `action_id` 只在一个 binding 上执行**；resolver 选择理由写入 `receipt.binding_ref`，换 binding 重试仍保持同一 `action_id` / `idempotency_key` / `intent_digest`，不以「两边都成功」当成两次完成。
 4. 不因为装了 CLI 就把 MCP 客户端当成已安装 CLI 的宿主。
 
-## 不变式（两种方式都成立）
+## 不变式（所有 binding 都成立）
 
 - key 只给 0600 绝对路径，agent 不读取 / 打印 / 复制内容；
 - 不自动付费、不自动发布、不自动派生子代理、不跑 race；
