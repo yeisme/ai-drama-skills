@@ -96,6 +96,7 @@ env -u GH_TOKEN -u GITHUB_TOKEN curl -fsSL https://raw.githubusercontent.com/yei
 
 | 文件 | 用途 |
 | --- | --- |
+| 聚合仓 `docs/drama-execution-kernel/HANDOFF.md` | **总览与交接**：版本、真源表、Skills/合同状态、后续路线 |
 | [prompt-variants.md](references/prompt-variants.md) | **三版对照与选择指南**（先读这个选版本） |
 | [bootstrap-prompt.md](references/bootstrap-prompt.md) | 完整版：逐条命令 + 全部门禁 |
 | [bootstrap-prompt-short.md](references/bootstrap-prompt-short.md) | 简短版：~20 行，委托给 Skill |

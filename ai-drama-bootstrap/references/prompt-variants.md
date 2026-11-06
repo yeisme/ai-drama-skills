@@ -39,6 +39,7 @@
 
 | 内容 | 唯一源 |
 | --- | --- |
+| 全链条总览、版本、合同状态、后续路线 | 聚合仓 `yeisme-agent-my-skills` → `docs/drama-execution-kernel/HANDOFF.md` |
 | 安装 / 连接命令全表 | [install-and-connect.md](install-and-connect.md) |
 | CLI / MCP / HTTP / SDK 命令与差异（binding 参考） | [surface-choice.md](surface-choice.md) |
 | 能力抽象、三类合同、重试、审批窗口 | 聚合仓 `yeisme-agent-my-skills` → `docs/drama-execution-kernel/capability-abstraction.md` |

@@ -2,6 +2,9 @@
 
 本仓是 `yeisme/ai-drama-skills` 独立仓库。做剧执行内核（Drama Execution Kernel, DEK v1）的**规范设计真源**在聚合仓 `yeisme/yeisme-agent-my-skills`：
 
+- **总览与交接**：`https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/HANDOFF.md`
+- **后续实现路线**：`https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/implementation-roadmap.md`
+- 能力抽象（一个作用三类 kind）：`https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/capability-abstraction.md`
 - 抽象设计：`https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/abstract-design.md`
 - 执行单元设计：`https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/execution-units.md`
 - 自动化做剧核心流程：`https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/automation-core.md`
@@ -11,9 +14,9 @@
 
 | Skill | 职责 |
 | --- | --- |
-| `ai-drama-bootstrap` | Router 之前的环境准备层；可复制主提示词在 `ai-drama-bootstrap/references/bootstrap-prompt.md` |
-| `ai-drama-action-receipt` | 冻结引用、幂等授权、结果词汇与 UNKNOWN 恢复（C1） |
-| `ai-drama-remote-operations` | owner HTTP 服务 + remote profile + 控制中心投影对齐 |
+| `ai-drama-bootstrap` | Router 之前的环境准备层；三版提示词、一次 `ApprovalWindow`、`retry_budget=2`、三类能力 |
+| `ai-drama-action-receipt` | **合同层 + 能力调用收据 owner**：`GenerationReceipt` / `ApprovalWindow` / 有界重试 / UNKNOWN 恢复（C1）；新增 `references/capability-invocation.md` |
+| `ai-drama-remote-operations` | `GenerationBinding` 发现、连接准备、控制中心投影对齐；不再分 CLI/MCP 流程 |
 
 ## 引导提示词（`ai-drama-bootstrap/references/`）
 
