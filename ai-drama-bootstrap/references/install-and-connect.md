@@ -13,6 +13,9 @@
 | Scaena setup / skills | `scaena setup auto`、`scaena skills install --runtimes auto --yes --agent`、`scaena skills doctor --agent`、`scaena doctor --agent` |
 | Eikona remote | `cli/eikona/docs/commands/remote.md` |
 | Scaena remote | `agent/scaena/docs/commands/remote.md` |
+| Eikona MCP | `cli/eikona/docs/commands/mcp.md`、`mcp-discovery.md`、`interfaces/lan-http-mcp-private-beta.md` |
+| Scaena MCP | `agent/scaena/docs/design/local-mcp-production-loop.md`、`docs/mcp-input-intake.md` |
+| MCP 客户端无 CLI | 根 `docs/workflows/mcp-client-without-cli.md`、`openspec/specs/remote-mcp-media-input-contract` |
 | 输出契约 | `docs/workflows/ai-native-cli-output-contract.md` |
 
 ## 占位符
@@ -25,6 +28,7 @@
 | `PROJECT` | owner 侧 project id | 如 `project:drama-s01` / `drama-s01` |
 | `STORY_PATH` | 剧本 / 小说文件绝对路径 | 由 Router 消费，bootstrap 不解析内容 |
 | `RUNTIMES` | Agent runtime 列表 | `agents,codex`；`auto` 由 setup 自行判定 |
+| `SURFACE` | 接入方式 | **必须明确询问** `cli` / `mcp` / `both`，不自动推断；决定阶段 1/2/3 的分支 |
 
 ## 阶段 0 探测
 
@@ -81,9 +85,9 @@ scaena skills doctor --agent
 - 不向 `.codex/skills/` 重复安装同一 Skill；不从 runtime 副本发布源码。
 - 聚合仓 `yeisme-agent-my-skills` 带嵌套 submodule，安装做剧 skill 时指向 `ai-drama-skills` / `scaena-skills`，不指向聚合仓。
 
-## 阶段 3 连接
+## 阶段 3 连接（按 `SURFACE` 分支）
 
-**client**
+**surface=cli（remote connect）**
 
 ```bash
 eikona remote connect --endpoint <EIKONA_ENDPOINT> --key-file <KEY_FILE_EIKONA> --allow-private-http --project <PROJECT>
@@ -93,7 +97,24 @@ scaena remote doctor --json
 eikona remote describe --agent
 ```
 
-**owner**
+**surface=mcp（MCP stdio，客户端不需要产品 CLI）**
+
+```bash
+eikona mcp doctor --endpoint <EIKONA_ENDPOINT> --key-file <KEY_FILE_EIKONA> --json
+eikona mcp capabilities --endpoint <EIKONA_ENDPOINT> --key-file <KEY_FILE_EIKONA> --json
+eikona mcp --transport stdio --endpoint <EIKONA_ENDPOINT> --key-file <KEY_FILE_EIKONA>
+scaena mcp serve --stdio --endpoint <SCAENA_ENDPOINT> --key-file <KEY_FILE_SCAENA>
+scaena mcp inventory --local-project ./demo --json
+scaena mcp doctor --json
+```
+
+动作参数**只从 `tools/list` / `inputSchema` / `resources/read`** 取得，不猜名字、不复数化、不枚举未声明 action。Eikona 工具面为 `eikona.search`（只读卡片）+ `eikona.execute`（一次一个 allowlisted `action` + `args`），`actions.describe` 查精确参数、`models.list` 查实时路由与 `start_here`；`assets.handoff` 返回 `eikona.asset_handoff.v2`；`workflow.submit_scaena_request` 走同一 application service，不 shell out 到 CLI。Scaena `tools/list` 只暴露 live backing 的 executable descriptors，planned / readonly / unavailable 不进可执行列表。
+
+远程 MCP 参考输入必须是 `eikona://artifact/<handle>` 或 `eikona://asset/<id>`；客户端绝对路径在 provider 调用前拒绝 `invalid_reference`。客户端文件先 `asset.upload.begin` → PUT → `asset.upload.complete` 得到 `eikona://asset/<id>`。同机 CLI 的本地路径仍合法，不混用。MCP 的 stdout 只承载 JSON-RPC 协议帧。
+
+**surface=both**：先 cli doctor，再 mcp 配置；同一 `action_id` 只在一侧执行，两侧报告同一 `event_cursor`。
+
+**MODE=owner（本机起服务，仅用户明确选择时）**
 
 ```bash
 eikona service access-key issue --name drama-cli --role operator --purpose cli-remote-v1 --ttl 720h --key-file <KEY_FILE_EIKONA>
@@ -111,6 +132,11 @@ profile 落点：`~/.eikona/remote-profile.json`（`eikona.remote_profile.v1`）
 - `scaena remote` v1 slice 只路由 `remote / upload / mcp / doctor / board`；`init` / `workflow run` / storyboard-video generation / export 返回 `REMOTE_PROFILE_UNSUPPORTED_COMMAND`。这是 typed action 路由缺口（C1），**不得**用 `--no-remote` 在客户端落 owner state。
 - 远程 `edit` 参考图必须是 owner 服务端可解析的 `eikona://artifact/<handle>`，客户端绝对路径（如 `/var/folders/.../T/...`）在 provider 调用前必须拒绝。
 - 私网明文 / operator-managed HTTP 的 readiness 必须把 TLS 与 production 标为 `degraded|blocked`。
+- `eikona mcp --transport http` 目前只**投影**监听地址（`--allow-remote` 只是确认非 loopback 投影），不是 TLS / production-ready 证据；Scaena Streamable HTTP 当前为 `blocked`。
+- MCP `tools/list` 不是能力愿望清单：planned / readonly / unavailable 不进 executable descriptors，不得假装可调用；`DeniedActionError` 对未知与无权限动作返回相同，停止并重估 lane，不探测 action 名。
+- 远程 MCP 里 worker 已 claim 且执行失败后必须投影 `failed`，不得继续 `queued`；`wait` 是有界观察，不是无限阻塞到出图。
+
+两条路径的完整差异与不变式见 [surface-choice.md](surface-choice.md)。
 
 ## 阶段 4 交接
 
