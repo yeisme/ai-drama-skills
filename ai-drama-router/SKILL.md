@@ -162,3 +162,16 @@ credential 或 provider payload。
 ```bash
 python3 scripts/validate_drama_matrix.py
 ```
+
+## 执行内核接入（DEK v1）
+
+Router 仍是唯一语义入口，只选一个 primary、最多一个 compatible constraint，**不批量激活执行链**。当 `stage_plans[]` 进入生产执行阶段时，增加一条 `execution_lane` 轴，按阶段指向 DEK 的按需 skill：
+
+| 阶段 | 路由目标 |
+| --- | --- |
+| 动作资格、幂等、UNKNOWN 恢复、状态词汇对齐 | `ai-drama-action-receipt` |
+| 确认清单的批量抽卡、wave 依赖、统一回查 | `scaena-asset-draw-batch` |
+| 视频 / 音频 / 衍生图替换与失败受控修复 | `scaena-bounded-replacement` |
+| owner HTTP 服务 + remote profile + 控制中心投影 | `ai-drama-remote-operations` |
+
+本 Router 不生成 receipt、不写 owner state、不新建第二套做剧矩阵。抽象与执行单元设计见 `https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/README.md`（独立仓库 `yeisme/yeisme-agent-my-skills`）。`execution_lane` 只改变选中的 primary skill，不改变 `DramaRoutePlan v1` 的字段或 canonical owner。

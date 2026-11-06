@@ -1,0 +1,4 @@
+interface:
+  display_name: "做剧动作收据与恢复"
+  short_description: "统一冻结引用、幂等授权、结果词汇与 UNKNOWN 恢复，不改 owner 状态。"
+  default_prompt: "Use $ai-drama-action-receipt to validate a drama production action against its frozen plan digest, scope digest, idempotency key and human confirmation, report ACCEPTED/COMPLETED/BOUND/REVIEWED separately, and give the read-only reconcile path for any UNKNOWN outcome. Do not generate media or write owner state."

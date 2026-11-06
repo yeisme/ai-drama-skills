@@ -78,3 +78,14 @@ cd agent/scaena
 task test:architecture
 task test:integration
 ```
+
+## 执行内核接入（DEK v1）
+
+编排层的 receipts、bounded retries、honest current-capability checks 统一引用 `ai-drama-action-receipt` 的词汇与恢复决策表，不另造第二套状态机：
+
+- `ACCEPTED` / `COMPLETED` / `BOUND` / `REVIEWED` / `PRODUCTION_ADMITTED` / `EXPORT_READY` 分开报告，禁止互相冒充；
+- `unknown_accept` 只读 reconcile 原 `submission_ref` / `action_id`，不换幂等键、不换模型、不创建替代任务；
+- 一次动作一个 `action_id + event_cursor`，供远程 CLI 与控制中心共用；
+- 抽卡批次、有界替换、远程操作分别交 `scaena-asset-draw-batch`、`scaena-bounded-replacement`、`ai-drama-remote-operations`。
+
+完整设计见 `https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/README.md`。本 Skill 继续负责完整链路编排，不因接入 DEK 而扩大写入范围，也不把 fixture 成功当成 production-ready。

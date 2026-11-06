@@ -1,0 +1,4 @@
+interface:
+  display_name: "做剧远程服务操作与投影对齐"
+  short_description: "让远程 CLI 与控制中心共用 owner typed action 与 event cursor，不建跨 owner 网关。"
+  default_prompt: "Use $ai-drama-remote-operations to submit a frozen OwnerAction to the correct Eikona or Scaena HTTP service over a secret-free remote profile, then align the control center projection by action_id and event_cursor. Report REMOTE_PROFILE_UNSUPPORTED_COMMAND honestly as a typed-action gap; do not use --no-remote to write owner state locally or build a cross-owner gateway."
