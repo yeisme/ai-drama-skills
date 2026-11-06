@@ -175,3 +175,16 @@ Router 仍是唯一语义入口，只选一个 primary、最多一个 compatible
 | owner HTTP 服务 + remote profile + 控制中心投影 | `ai-drama-remote-operations` |
 
 本 Router 不生成 receipt、不写 owner state、不新建第二套做剧矩阵。抽象与执行单元设计见 `https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/README.md`（独立仓库 `yeisme/yeisme-agent-my-skills`）。`execution_lane` 只改变选中的 primary skill，不改变 `DramaRoutePlan v1` 的字段或 canonical owner。
+
+## 自动化核心流程与 bootstrap 交接
+
+`ai-drama-bootstrap` 是 Router **之前**的一次性环境准备层（安装 skills / CLI、配置 remote 连接、验证就绪），完成后立即把 `STORY_PATH` 交回本 Router。它不创作、不生成、不做语义路由；Router 不因它存在而让出入口，也不假设仓库布局、profile 文件或安装工具（遵守 [skill-resolution-policy.md](references/skill-resolution-policy.md)）。
+
+环境就绪后，按 `DramaRoutePlan` 的可选 `automation_profile` 连续推进六阶段：`source_admission → asset_gap → director_compose → semantic_acceptance → controlled_write → scope_completion`。规则：
+
+- 每阶段只选一个 primary + 最多一个 constraint；上游 `ref + digest` 与结论齐全才进入下一段；
+- 已完成阶段不重做；进度询问不暂停、不重置授权；UNKNOWN 只读 `reconcile`；
+- 生成、选图、绑定、备案、复核、整体完成分开报告；**停在正片提交前**；
+- 不自动派生子代理、不自动付费、不自动发布；费用与正片提交需新的明确授权。
+
+字段定义见 [drama-route-plan-contract.md](references/drama-route-plan-contract.md#automation_profile-dek-v1-扩展可选字段)；流程纪律与映射见 `https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/automation-core.md`。

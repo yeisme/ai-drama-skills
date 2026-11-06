@@ -158,3 +158,33 @@ adapter 层由这些事实推导，不得成为 `DramaRoutePlan` 的 provider-sp
 转换到宿主运行时计划时，只传输：Skill name/ref/version/digest/source kind、stage、logical owner、可选 owner binding、input/output contract、originality mode/decision ref、artifact disposition、persistence、batch、acceptance、compatibility basis 和 pinned 状态。
 
 宿主运行时不应依赖 Router 的文件路径或读取完整 `SKILL.md` 来恢复生产状态，也不应重新执行语义发现。Router 包不得内置某个宿主产品名、仓库路径、profile 文件或私有命令。
+
+## `automation_profile`（DEK v1 扩展，可选字段）
+
+只控制**执行推进方式**，不改变十五轴解析、primary/constraint 选择、canonical owner 或任何既有字段语义：
+
+```text
+automation_profile?:
+  mode: continuous | gated                  # 默认 continuous
+  stop_before_final_submit: boolean         # 默认 true
+  continuous_advance: boolean               # 默认 true；进度询问不暂停、不重置授权
+  visual_review_default: text_first         # 默认不主动看图
+  subagents: disabled_unless_explicit      # 默认关闭
+  unknown_policy: reconcile_readonly       # UNKNOWN 不重投、不换幂等键
+  completion_evidence:
+    per_stage: stage_receipt
+    per_episode: verify_preparation_complete
+    full_scope: verify_full_request_scope
+  gates_ref: <FrozenRef>
+```
+
+约束：
+
+- 已完成阶段不重做；`source_digest` 未变且无新冲突时复用已审结果，只失效受影响分支；
+- 每阶段只有上游产物 `ref + digest` 与结论齐全才进入下一段；跨阶段不等于同时加载全部 Skills；
+- 六阶段顺序为 `source_admission → asset_gap → director_compose → semantic_acceptance → controlled_write → scope_completion`；`scope_completion` 停在正片提交前；
+- `ACCEPTED / COMPLETED / BOUND / REVIEWED / STAGE_COMPLETE / EPISODE_PREPARED / FULL_SCOPE_PREPARED` 分开报告，禁止互相冒充；
+- `FULL_SCOPE_PREPARED` 不等于正片已提交、成片完成或审美验收；
+- 付费生成与正片提交需要新的明确授权；`--confirm` 不得被「继续」覆盖。
+
+完整流程纪律与映射见聚合仓 `https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/automation-core.md`。

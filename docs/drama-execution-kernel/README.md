@@ -4,12 +4,14 @@
 
 - 抽象设计：`https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/abstract-design.md`
 - 执行单元设计：`https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/execution-units.md`
+- 自动化做剧核心流程：`https://github.com/yeisme/yeisme-agent-my-skills/blob/main/docs/drama-execution-kernel/automation-core.md`
 - 合同 C1 / C2 / C3 与接入说明：同目录 `contracts/` 与 `integration.md`
 
 本仓落地的 DEK skill：
 
 | Skill | 职责 |
 | --- | --- |
+| `ai-drama-bootstrap` | Router 之前的环境准备层；可复制主提示词在 `ai-drama-bootstrap/references/bootstrap-prompt.md` |
 | `ai-drama-action-receipt` | 冻结引用、幂等授权、结果词汇与 UNKNOWN 恢复（C1） |
 | `ai-drama-remote-operations` | owner HTTP 服务 + remote profile + 控制中心投影对齐 |
 

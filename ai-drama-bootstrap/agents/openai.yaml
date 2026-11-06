@@ -1,0 +1,4 @@
+interface:
+  display_name: "做剧环境引导（Bootstrap）"
+  short_description: "安装做剧 skills 与 owner CLI、配置 remote 连接、验证就绪后把剧本交给 Router。"
+  default_prompt: "Use $ai-drama-bootstrap to probe this machine read-only, install the published drama skills and owner CLIs from the public mirror catalog, connect secret-free remote profiles to the Eikona and Scaena HTTP services, verify with remote doctor, then hand off to ai-drama-router with the screenplay or novel path. Never read or print credential values, never pay for generation, and stop before final video submission."
